@@ -42,6 +42,8 @@ VALUES
 CREATE TABLE `roles_usuario` (
   `usuario_id` integer NOT NULL,
   `rol_id` integer NOT NULL
+
+  PRIMARY KEY (`usuario_id`, `rol_id`)
 );
 
 CREATE TABLE `atributo` (
