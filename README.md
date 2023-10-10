@@ -2,7 +2,7 @@
 
 1. Crear una base de datos en MySQL con el nombre que se desee.
 
-2. Ejecutar el contenido del archivo [schema.sql](https://github.com/gmr458/proyecto/blob/master/schema.sql) para crear las tablas.
+2. Ejecutar el contenido del archivo [schema.sql](https://github.com/gmr458/proyecto/blob/master/schema_mysql.sql) para crear las tablas.
 
 3. Crear en la raiz del proyecto un archivo `.env` y alli poner los valores de configuración para la conexión con la base de datos.
 
