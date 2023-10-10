@@ -12,7 +12,7 @@ CREATE TABLE `usuario` (
 
 CREATE TABLE `tarea` (
   `id`             integer                        NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `titulo`         varchar(255)                   NOT NULL,
+  `titulo`         varchar(255)                   NOT NULL UNIQUE,
   `prioridad`      ENUM ('baja', 'media', 'alta') NOT NULL,
   `usuario_id`     integer                        NOT NULL,
   `fecha_creacion` timestamp                      NOT NULL DEFAULT now(),
