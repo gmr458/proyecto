@@ -9,18 +9,17 @@ class UsuarioController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    sql = """INSERT INTO `usuario` (
+                    query = """INSERT INTO `usuario` (
                         `nombre`,
                         `apellido`,
                         `telefono`,
                         `email`,
                         `contrasena`,
                         `numero_documento`,
-                        `perfil_id`,
                         `activado`
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
                     cursor.execute(
-                        sql,
+                        query,
                         (
                             usuario.nombre,
                             usuario.apellido,
@@ -28,11 +27,23 @@ class UsuarioController:
                             usuario.email,
                             usuario.contrasena,
                             usuario.numero_documento,
-                            usuario.perfil_id,
                             True,
                         ),
                     )
                 connection.commit()
+        except Exception as e:
+            raise e
+
+    def get_by_id(self, id: int):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "SELECT * FROM `usuario` WHERE `id` = %s"
+                    cursor.execute(query, (id,))
+                    usuario = cursor.fetchone()
+                    return usuario
         except Exception as e:
             raise e
 
@@ -42,11 +53,8 @@ class UsuarioController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    sql = """SELECT * FROM `usuario` WHERE `email` = %s"""
-                    cursor.execute(
-                        sql,
-                        (email,),
-                    )
+                    query = "SELECT * FROM `usuario` WHERE `email` = %s"
+                    cursor.execute(query, (email,))
                     usuario = cursor.fetchone()
                     return usuario
         except Exception as e:
@@ -58,11 +66,8 @@ class UsuarioController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    sql = """SELECT * FROM `usuario` WHERE `numero_documento` = %s"""
-                    cursor.execute(
-                        sql,
-                        (numero_documento,),
-                    )
+                    query = "SELECT * FROM `usuario` WHERE `numero_documento` = %s"
+                    cursor.execute(query, (numero_documento,))
                     usuario = cursor.fetchone()
                     return usuario
         except Exception as e:
@@ -74,11 +79,8 @@ class UsuarioController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    sql = """SELECT * FROM `usuario` WHERE `telefono` = %s"""
-                    cursor.execute(
-                        sql,
-                        (telefono,),
-                    )
+                    query = """SELECT * FROM `usuario` WHERE `telefono` = %s"""
+                    cursor.execute(query, (telefono,))
                     usuario = cursor.fetchone()
                     return usuario
         except Exception as e:

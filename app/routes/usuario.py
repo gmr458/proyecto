@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -11,7 +11,9 @@ from app.config.jwt import (
     hash_password,
     verify_password,
 )
+from app.controllers.rol import RolController
 from app.controllers.usuario import UsuarioController
+from app.models.rol import NombreRol
 from app.models.usuario import (
     CreateUsuarioSchema,
     LoginUsuarioSchema,
@@ -19,15 +21,35 @@ from app.models.usuario import (
 )
 
 router = APIRouter()
+
 usuario_controller = UsuarioController()
+rol_controller = RolController()
 
 
 @router.post(
-    "/register",
+    "/",
     response_model=ResponseUsuarioSchema,
     status_code=status.HTTP_201_CREATED,
 )
-def create_usuario(payload: CreateUsuarioSchema):
+def create_usuario(
+    payload: CreateUsuarioSchema,
+    current_user: Annotated[dict[str, Any], Depends(get_current_user)],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
     user_found = usuario_controller.get_by_email(payload.email.lower())
     if user_found is not None:
         raise HTTPException(
@@ -49,6 +71,13 @@ def create_usuario(payload: CreateUsuarioSchema):
             detail="Ya existe un usuario con este número de telefono",
         )
 
+    role_found = rol_controller.get_by_id(payload.rol_id)
+    if role_found is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="El rol enviado no existe",
+        )
+
     payload.contrasena = hash_password(str(payload.contrasena))
     payload.email = payload.email.lower()
 
@@ -59,6 +88,8 @@ def create_usuario(payload: CreateUsuarioSchema):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error obteniendo usuario creado",
         )
+
+    rol_controller.create_para_usuario(payload.rol_id, user_created["id"])
 
     del user_created["contrasena"]
     return user_created
@@ -88,6 +119,10 @@ def login(payload: LoginUsuarioSchema):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.get("/me", response_model=ResponseUsuarioSchema, status_code=status.HTTP_200_OK)
-def me(current_user: Annotated[ResponseUsuarioSchema, Depends(get_current_user)]):
+@router.get(
+    "/perfil", response_model=ResponseUsuarioSchema, status_code=status.HTTP_200_OK
+)
+def mi_perfil(
+    current_user: Annotated[ResponseUsuarioSchema, Depends(get_current_user)]
+):
     return current_user

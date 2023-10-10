@@ -1,7 +1,8 @@
+import os
+
+from dotenv import load_dotenv
 import pymysql
 import pymysql.cursors
-from dotenv import load_dotenv
-import os
 
 
 def get_mysql_connection():

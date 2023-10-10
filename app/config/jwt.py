@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Annotated
-from fastapi import Depends, HTTPException, status
 
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -11,7 +11,7 @@ from app.controllers.usuario import UsuarioController
 
 SECRET_KEY = "88045b946ebb561ea4118734bd2b57185e9984d6cd6d02c19ba9ca4237d88eaa"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 
 usuario_controller = UsuarioController()
 

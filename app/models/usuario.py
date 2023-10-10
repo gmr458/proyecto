@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from pydantic import BaseModel, EmailStr, constr
 
 
@@ -8,11 +9,11 @@ class UsuarioBaseSchema(BaseModel):
     telefono: str
     email: EmailStr
     numero_documento: str
-    perfil_id: int
 
 
 class CreateUsuarioSchema(UsuarioBaseSchema):
     contrasena: str = constr(min_length=8)
+    rol_id: int
 
 
 class ResponseUsuarioSchema(UsuarioBaseSchema):

@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import usuario
+from app.routes import tareas, usuario
+from app.startup import crear_usuario_admin
 
 app = FastAPI()
 
@@ -18,4 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(usuario.router, tags=["Usuarios"], prefix="/users")
+app.include_router(usuario.router, tags=["Usuarios"], prefix="/usuarios")
+app.include_router(tareas.router, tags=["Tareas"], prefix="/tareas")
+
+crear_usuario_admin()
