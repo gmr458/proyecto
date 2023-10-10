@@ -50,7 +50,7 @@ En el PowerShell de Windows:
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 ```
 ```sh
-venv\Scripts\activate.ps1
+venv\Scripts\Activate.ps1
 ```
 
 6. Instalar las dependencias con el siguiente comando:
