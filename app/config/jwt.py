@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 from app.controllers.usuario import UsuarioController
 
-SECRET_KEY = "88045b946ebb561ea4118734bd2b57185e9984d6cd6d02c19ba9ca4237d88eaa"
+SECRET_KEY = "my_ultra_secure_jwt_secret_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 

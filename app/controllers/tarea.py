@@ -12,7 +12,9 @@ class TareaController:
                     query = """INSERT INTO `tarea` (
                         `titulo`,
                         `prioridad`,
-                        `usuario_id`,
+                        `tipo`,
+                        `empleado_id`,
+                        `creador_id`,
                         `fecha_limite`,
                         `evidencia`
                     ) VALUES (%s, %s, %s, %s, %s)"""
@@ -21,7 +23,9 @@ class TareaController:
                         (
                             tarea.titulo,
                             tarea.prioridad,
-                            tarea.usuario_id,
+                            tarea.tipo,
+                            tarea.empleado_id,
+                            tarea.creador_id,
                             tarea.fecha_limite,
                             tarea.evidencia,
                         ),
@@ -92,7 +96,9 @@ class TareaController:
                         SET
                             `titulo` = %s,
                             `prioridad` = %s,
-                            `usuario_id` = %s,
+                            `tipo` = %s,
+                            `empleado_id` = %s,
+                            `creador_id` = %s,
                             `fecha_limite` = %s,
                             `evidencia` = %s
                         WHERE `id` = %s"""
@@ -101,7 +107,9 @@ class TareaController:
                         (
                             tarea.titulo,
                             tarea.prioridad,
-                            tarea.usuario_id,
+                            tarea.tipo,
+                            tarea.empleado_id,
+                            tarea.creador_id,
                             tarea.fecha_limite,
                             tarea.evidencia,
                             id,

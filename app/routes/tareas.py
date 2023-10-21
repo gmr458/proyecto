@@ -44,7 +44,7 @@ def create_tarea(
             detail="Ya existe una tarea con ese titulo",
         )
 
-    usuario_found = usuario_controller.get_by_id(payload.usuario_id)
+    usuario_found = usuario_controller.get_by_id(payload.empleado_id)
     if usuario_found is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -66,6 +66,7 @@ def create_tarea(
             detail="No puede asignar una tarea a un administrador",
         )
 
+    payload.creador_id = current_user["id"]
     tarea_controller.create(payload)
     tarea_created = tarea_controller.get_by_titulo(payload.titulo)
     if tarea_created is None:
@@ -258,7 +259,7 @@ def update_tarea(
                 detail="El titulo ya esta siendo usado por otra tarea",
             )
 
-    usuario_found = usuario_controller.get_by_id(payload.usuario_id)
+    usuario_found = usuario_controller.get_by_id(payload.empleado_id)
     if usuario_found is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

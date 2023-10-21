@@ -16,10 +16,19 @@ class Estado(str, Enum):
     ejecutada = "ejecutada"
 
 
+class Tipo(str, Enum):
+    quimico = "quimico"
+    agua = "agua"
+    aire = "aire"
+    reciclaje = "reciclaje"
+
+
 class TareaBaseSchema(BaseModel):
     titulo: str
     prioridad: Prioridad
-    usuario_id: int
+    tipo: Tipo
+    empleado_id: int
+    creador_id: int | None
     fecha_limite: datetime
     evidencia: str | None
 
