@@ -1,3 +1,5 @@
+-- DESACTUALIZADA
+
 CREATE TYPE "prioridad" AS ENUM (
   'baja',
   'media',
