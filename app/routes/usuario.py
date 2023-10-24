@@ -95,7 +95,7 @@ def create_usuario(
     return user_created
 
 
-@router.post("/login", response_model=Token, status_code=status.HTTP_200_OK)
+@router.post("/login", status_code=status.HTTP_200_OK)
 def login(payload: LoginUsuarioSchema):
     user = usuario_controller.get_by_email(payload.email)
 
@@ -116,7 +116,13 @@ def login(payload: LoginUsuarioSchema):
         data={"sub": user["email"]}, expires_delta=access_token_expires
     )
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    roles = rol_controller.get_by_user_id(user["id"])
+
+    return {
+        "email": user["email"],
+        "roles": [r["nombre"] for r in roles],
+        "token": access_token,
+    }
 
 
 @router.get(
