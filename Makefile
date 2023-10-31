@@ -2,4 +2,4 @@ dev:
 	uvicorn app.main:app --reload
 
 format:
-	black ./app
+	ruff format ./app
