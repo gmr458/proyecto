@@ -2,12 +2,18 @@ CREATE TABLE `usuario` (
   `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `nombre` varchar(255) NOT NULL,
   `apellido` varchar(255) NOT NULL,
-  `telefono` varchar(255) UNIQUE NOT NULL,
   `email` varchar(255) UNIQUE NOT NULL,
   `contrasena` varchar(255) NOT NULL,
   `numero_documento` varchar(255) UNIQUE NOT NULL,
   `fecha_creacion` timestamp NOT NULL DEFAULT (now()),
   `activado` boolean NOT NULL DEFAULT true
+);
+
+CREATE TABLE `telefono` (
+  `usuario_id` integer NOT NULL,
+  `code_country` varchar(255) NOT NULL,
+  `number` varchar(255) NOT NULL,
+  PRIMARY KEY (`usuario_id`, `code_country`, `number`)
 );
 
 CREATE TABLE `tarea` (
@@ -59,6 +65,8 @@ CREATE TABLE `atributos_usuario` (
   `atributo_id` integer NOT NULL,
   `valor` varchar(255) NOT NULL
 );
+
+ALTER TABLE `telefono` ADD FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`);
 
 ALTER TABLE `roles_usuario` ADD FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`);
 

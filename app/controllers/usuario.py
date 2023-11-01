@@ -12,22 +12,33 @@ class UsuarioController:
                     query = """INSERT INTO `usuario` (
                         `nombre`,
                         `apellido`,
-                        `telefono`,
                         `email`,
                         `contrasena`,
                         `numero_documento`,
                         `activado`
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+                    ) VALUES (%s, %s, %s, %s, %s, %s)"""
                     cursor.execute(
                         query,
                         (
                             usuario.nombre,
                             usuario.apellido,
-                            usuario.telefono,
                             usuario.email,
                             usuario.contrasena,
                             usuario.numero_documento,
                             True,
+                        ),
+                    )
+                    user_id = cursor.lastrowid
+                    cursor.execute(
+                        """INSERT INTO `telefono` (
+                            `usuario_id`,
+                            `code_country`,
+                            `number`
+                        ) VALUES (%s, %s, %s)""",
+                        (
+                            user_id,
+                            usuario.code_country,
+                            usuario.phone_number,
                         ),
                     )
                 connection.commit()
@@ -40,7 +51,21 @@ class UsuarioController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT * FROM `usuario` WHERE `id` = %s"
+                    query = """SELECT
+                            usuario.`id`,
+                            usuario.`nombre`,
+                            usuario.`apellido`,
+                            usuario.`email`,
+                            usuario.`contrasena`,
+                            usuario.`numero_documento`,
+                            usuario.`fecha_creacion`,
+                            usuario.`activado`,
+                            telefono.`code_country`,
+                            telefono.`number`
+                        FROM `usuario`
+                        INNER JOIN `telefono`
+                            ON usuario.`id` = telefono.`usuario_id`
+                        WHERE usuario.`id` = %s"""
                     cursor.execute(query, (id,))
                     usuario = cursor.fetchone()
                     return usuario
@@ -53,7 +78,21 @@ class UsuarioController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT * FROM `usuario` WHERE `email` = %s"
+                    query = """SELECT
+                            usuario.`id`,
+                            usuario.`nombre`,
+                            usuario.`apellido`,
+                            usuario.`email`,
+                            usuario.`contrasena`,
+                            usuario.`numero_documento`,
+                            usuario.`fecha_creacion`,
+                            usuario.`activado`,
+                            telefono.`code_country`,
+                            telefono.`number`
+                        FROM `usuario`
+                        INNER JOIN `telefono`
+                            ON usuario.`id` = telefono.`usuario_id`
+                        WHERE usuario.`email` = %s"""
                     cursor.execute(query, (email,))
                     usuario = cursor.fetchone()
                     return usuario
@@ -66,21 +105,56 @@ class UsuarioController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT * FROM `usuario` WHERE `numero_documento` = %s"
+                    query = """SELECT
+                            usuario.`id`,
+                            usuario.`nombre`,
+                            usuario.`apellido`,
+                            usuario.`email`,
+                            usuario.`contrasena`,
+                            usuario.`numero_documento`,
+                            usuario.`fecha_creacion`,
+                            usuario.`activado`,
+                            telefono.`code_country`,
+                            telefono.`number`
+                        FROM `usuario`
+                        INNER JOIN `telefono`
+                            ON usuario.`id` = telefono.`usuario_id`
+                        WHERE usuario.`numero_documento` = %s"""
                     cursor.execute(query, (numero_documento,))
                     usuario = cursor.fetchone()
                     return usuario
         except Exception as e:
             raise e
 
-    def get_by_telefono(self, telefono: str):
+    def get_by_telefono(self, code_country: str, telefono: str):
         connection = get_mysql_connection()
 
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = """SELECT * FROM `usuario` WHERE `telefono` = %s"""
-                    cursor.execute(query, (telefono,))
+                    query = """SELECT
+                            usuario.`id`,
+                            usuario.`nombre`,
+                            usuario.`apellido`,
+                            usuario.`email`,
+                            usuario.`contrasena`,
+                            usuario.`numero_documento`,
+                            usuario.`fecha_creacion`,
+                            usuario.`activado`,
+                            telefono.`code_country`,
+                            telefono.`number`
+                        FROM `usuario`
+                        INNER JOIN `telefono`
+                            ON usuario.`id` = telefono.`usuario_id`
+                        WHERE telefono.`code_country` = %s
+                            AND telefono.`number` = %s"""
+                    cursor.execute(
+                        query,
+                        (
+                            code_country,
+                            telefono,
+                        ),
+                    )
                     usuario = cursor.fetchone()
                     return usuario
         except Exception as e:

@@ -2,6 +2,11 @@ from datetime import timedelta
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from phonenumbers import (
+    NumberParseException,
+    parse as parse_phone_number,
+    is_valid_number,
+)
 
 from app.config.jwt import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -28,7 +33,7 @@ rol_controller = RolController()
 
 @router.post(
     "/",
-    response_model=ResponseUsuarioSchema,
+    # response_model=ResponseUsuarioSchema,
     status_code=status.HTTP_201_CREATED,
 )
 def create_usuario(
@@ -47,35 +52,65 @@ def create_usuario(
     if es_admin is False:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No tiene permisos para hacer esta operación",
+            detail={
+                "msg": "No tiene permisos para hacer esta operación",
+                "cause": "bad_auth",
+            },
+        )
+
+    try:
+        print(f"+{payload.code_country}{payload.phone_number}")
+        parsed_phone_number = parse_phone_number(
+            f"+{payload.code_country}{payload.phone_number}",
+            None,
+        )
+        is_valid = is_valid_number(parsed_phone_number)
+        if is_valid is False:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={"msg": "Número de telefono invalido", "cause": "number"},
+            )
+    except NumberParseException:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"msg": "Número de telefono invalido", "cause": "number"},
+        )
+
+    user_found = usuario_controller.get_by_telefono(
+        payload.code_country,
+        payload.phone_number,
+    )
+    if user_found is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "msg": "Ya existe un usuario con este número de telefono",
+                "cause": "number",
+            },
         )
 
     user_found = usuario_controller.get_by_email(payload.email.lower())
     if user_found is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Ya existe un usuario con este email",
+            detail={"msg": "Ya existe un usuario con este email", "cause": "email"},
         )
 
     user_found = usuario_controller.get_by_numero_documento(payload.numero_documento)
     if user_found is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Ya existe un usuario con este número de documento",
-        )
-
-    user_found = usuario_controller.get_by_telefono(payload.telefono)
-    if user_found is not None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Ya existe un usuario con este número de telefono",
+            detail={
+                "msg": "Ya existe un usuario con este número de documento",
+                "cause": "numero_documento",
+            },
         )
 
     role_found = rol_controller.get_by_id(payload.rol_id)
     if role_found is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="El rol enviado no existe",
+            detail={"msg": "El rol enviado no existe", "cause": "rol_id"},
         )
 
     payload.contrasena = hash_password(str(payload.contrasena))
@@ -86,13 +121,14 @@ def create_usuario(
     if user_created is None:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error obteniendo usuario creado",
+            detail={"msg": "Error obteniendo usuario creado", "cause": "internal"},
         )
 
     rol_controller.create_para_usuario(payload.rol_id, user_created["id"])
 
     del user_created["contrasena"]
-    return user_created
+
+    return {"msg": "Usuario creado", "data": {"user": user_created}}
 
 
 @router.post("/login", status_code=status.HTTP_200_OK)
@@ -102,13 +138,13 @@ def login(payload: LoginUsuarioSchema):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No existe un usuario con este email",
+            detail={"msg": "No existe un usuario con este email", "cause": "email"},
         )
 
     if not verify_password(payload.contrasena, user["contrasena"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Contraseña incorrecta",
+            detail={"msg": "Contraseña incorrecta", "cause": "contrasena"},
         )
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)

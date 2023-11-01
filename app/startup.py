@@ -25,7 +25,8 @@ def crear_usuario_admin():
     usuario = CreateUsuarioSchema(
         nombre=os.environ.get("ADMIN_NOMBRE", "Usuario"),
         apellido=os.environ.get("ADMIN_APELLIDO", "Admin"),
-        telefono=os.environ.get("ADMIN_TELEFONO", "1234567890"),
+        code_country=os.environ.get("ADMIN_CODE_COUNTRY", "57"),
+        phone_number=os.environ.get("ADMIN_NUMBER", "1234567890"),
         email=os.environ.get("ADMIN_EMAIL", "admin@email.com"),
         contrasena=os.environ.get("ADMIN_CONTRASENA", "admin123"),
         numero_documento=os.environ.get("ADMIN_NUM_DOC", "100200300400"),
