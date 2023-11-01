@@ -11,7 +11,7 @@ from app.controllers.usuario import UsuarioController
 
 SECRET_KEY = "my_ultra_secure_jwt_secret_key"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 1440
+ACCESS_TOKEN_EXPIRE_MINUTES = 3 * 24 * 60 # 3 days
 
 usuario_controller = UsuarioController()
 
