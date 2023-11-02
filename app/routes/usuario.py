@@ -1,16 +1,16 @@
 from datetime import timedelta
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, status
+import pandas as pd
 from phonenumbers import (
     NumberParseException,
-    parse as parse_phone_number,
     is_valid_number,
+    parse as parse_phone_number,
 )
 
 from app.config.jwt import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
-    Token,
     create_access_token,
     get_current_user,
     hash_password,
@@ -59,7 +59,6 @@ def create_usuario(
         )
 
     try:
-        print(f"+{payload.code_country}{payload.phone_number}")
         parsed_phone_number = parse_phone_number(
             f"+{payload.code_country}{payload.phone_number}",
             None,
@@ -129,6 +128,77 @@ def create_usuario(
     del user_created["contrasena"]
 
     return {"msg": "Usuario creado", "data": {"user": user_created}}
+
+
+@router.post("/upload/")
+async def upload_file(file: UploadFile):
+    if file.filename is None:
+        return HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"error": "the file should have a filename"},
+        )
+
+    if file.content_type is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "msg": "El tipo de contenido del archivo enviado es desconocido",
+                "cause": "file",
+            },
+        )
+
+    content_type = file.content_type
+
+    if (
+        content_type
+        != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        and content_type != "application/vnd.ms-excel"
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "msg": "El archivo debe ser de Excel",
+                "cause": "file",
+            },
+        )
+
+    dataframe = pd.read_excel(file.file.read())
+
+    dataframe["code_country"] = dataframe["code_country"].astype(str)
+    dataframe["phone_number"] = dataframe["phone_number"].astype(str)
+    dataframe["numero_documento"] = dataframe["numero_documento"].astype(str)
+    dataframe["rol_id"] = pd.to_numeric(
+        dataframe["rol_id"],
+        errors="coerce",
+        downcast="integer",
+    )
+    dataframe["contrasena"] = dataframe["contrasena"].apply(hash_password)
+
+    users_list: list[CreateUsuarioSchema] = []
+    for _, row in dataframe.iterrows():
+        user = CreateUsuarioSchema(
+            nombre=row["nombre"],
+            apellido=row["apellido"],
+            code_country=row["code_country"],
+            phone_number=row["phone_number"],
+            email=row["email"],
+            numero_documento=row["numero_documento"],
+            contrasena=row["contrasena"],
+            rol_id=row["rol_id"],
+        )
+        users_list.append(user)
+
+    users_created = []
+
+    for user in users_list:
+        usuario_controller.create(user)
+        user_created = usuario_controller.get_by_email(user.email)
+        if user_created:
+            del user_created["contrasena"]
+            users_created.append(user_created)
+            rol_controller.create_para_usuario(user.rol_id, user_created["id"])
+
+    return {"msg": "Usuario/s creados", "data": {"users_created": users_created}}
 
 
 @router.post("/login", status_code=status.HTTP_200_OK)
