@@ -6,6 +6,10 @@ from app.controllers.usuario import UsuarioController
 from app.models.rol import NombreRol
 from app.models.usuario import CreateUsuarioSchema
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 
 class UsuarioAdminNotFound(Exception):
     pass
