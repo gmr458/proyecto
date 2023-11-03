@@ -124,8 +124,6 @@ def create_usuario(
             detail={"msg": "Error obteniendo usuario creado", "cause": "internal"},
         )
 
-    rol_controller.create_para_usuario(payload.rol_id, user_created["id"])
-
     del user_created["contrasena"]
 
     return {"msg": "Usuario creado", "data": {"user": user_created}}
@@ -223,7 +221,6 @@ async def upload_file(
         if user_created:
             del user_created["contrasena"]
             users_created.append(user_created)
-            rol_controller.create_para_usuario(user.rol_id, user_created["id"])
 
     if len(users_created) == 0:
         raise HTTPException(

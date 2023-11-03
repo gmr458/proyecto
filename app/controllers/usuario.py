@@ -28,7 +28,9 @@ class UsuarioController:
                             True,
                         ),
                     )
+
                     user_id = cursor.lastrowid
+
                     cursor.execute(
                         """INSERT INTO `telefono` (
                             `usuario_id`,
@@ -39,6 +41,16 @@ class UsuarioController:
                             user_id,
                             usuario.code_country,
                             usuario.phone_number,
+                        ),
+                    )
+                    cursor.execute(
+                        """INSERT INTO `roles_usuario` (
+                            `usuario_id`,
+                            `rol_id`
+                        ) VALUES (%, %s)""",
+                        (
+                            user_id,
+                            usuario.rol_id,
                         ),
                     )
                 connection.commit()
