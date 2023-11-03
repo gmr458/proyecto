@@ -131,7 +131,28 @@ def create_usuario(
 
 
 @router.post("/upload/")
-async def upload_file(file: UploadFile):
+async def upload_file(
+    file: UploadFile,
+    current_user: Annotated[dict[str, Any], Depends(get_current_user)],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "msg": "No tiene permisos para hacer esta operación",
+                "cause": "bad_auth",
+            },
+        )
+
     if file.filename is None:
         return HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -177,14 +198,14 @@ async def upload_file(file: UploadFile):
     users_list: list[CreateUsuarioSchema] = []
     for _, row in dataframe.iterrows():
         user = CreateUsuarioSchema(
-            nombre=row["nombre"],
-            apellido=row["apellido"],
-            code_country=row["code_country"],
-            phone_number=row["phone_number"],
-            email=row["email"],
-            numero_documento=row["numero_documento"],
-            contrasena=row["contrasena"],
-            rol_id=row["rol_id"],
+            nombre=str(row["nombre"]),
+            apellido=str(row["apellido"]),
+            code_country=str(row["code_country"]),
+            phone_number=str(row["phone_number"]),
+            email=str(row["email"]),
+            numero_documento=str(row["numero_documento"]),
+            contrasena=str(row["contrasena"]),
+            rol_id=int(row["rol_id"]),
         )
         users_list.append(user)
 
