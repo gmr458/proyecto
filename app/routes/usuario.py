@@ -8,6 +8,7 @@ from phonenumbers import (
     is_valid_number,
     parse as parse_phone_number,
 )
+from pymysql.err import IntegrityError
 
 from app.config.jwt import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -153,12 +154,6 @@ async def upload_file(
             },
         )
 
-    if file.filename is None:
-        return HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"error": "the file should have a filename"},
-        )
-
     if file.content_type is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -210,16 +205,56 @@ async def upload_file(
         users_list.append(user)
 
     users_created = []
+    users_no_created = []
 
     for user in users_list:
-        usuario_controller.create(user)
+        try:
+            usuario_controller.create(user)
+        except IntegrityError:
+            users_no_created.append(
+                {
+                    "reason": "Ya existe",
+                    "user": user.model_dump(exclude={"contrasena"}),
+                }
+            )
+            continue
+
         user_created = usuario_controller.get_by_email(user.email)
         if user_created:
             del user_created["contrasena"]
             users_created.append(user_created)
             rol_controller.create_para_usuario(user.rol_id, user_created["id"])
 
-    return {"msg": "Usuario/s creados", "data": {"users_created": users_created}}
+    if len(users_created) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "msg": """Ningun usuario fue creado.
+                    Revisa la integridad de los datos del archivo excel,
+                    No se pueden crear usuarios que ya existen.""",
+                "cause": "file",
+            },
+        )
+
+    if len(users_no_created) > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "msg": f"""{len(users_created)} Usuario/s creados.
+                    {len(users_no_created)} Usuario/s no creados.
+                    Algunos usuarios no fueron creados,
+                    revisa la integridad de los datos del archivo excel,
+                    no se pueden crear usuarios que ya existen.""",
+                "cause": "file",
+            },
+        )
+
+    return {
+        "msg": f"{len(users_created)} Usuario/s creados",
+        "data": {
+            "users_created": users_created,
+        },
+    }
 
 
 @router.post("/login", status_code=status.HTTP_200_OK)
