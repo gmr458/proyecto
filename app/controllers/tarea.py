@@ -17,7 +17,7 @@ class TareaController:
                         `creador_id`,
                         `fecha_limite`,
                         `evidencia`
-                    ) VALUES (%s, %s, %s, %s, %s)"""
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
                     cursor.execute(
                         query,
                         (
