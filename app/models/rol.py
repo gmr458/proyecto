@@ -1,11 +1,6 @@
-from enum import Enum
-
 from pydantic import BaseModel
 
-
-class NombreRol(str, Enum):
-    administrador = "administrador"
-    empleado = "empleado"
+from app.models.nombre_rol import NombreRol
 
 
 class Rol(BaseModel):

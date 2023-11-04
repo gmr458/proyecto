@@ -4,7 +4,7 @@ from app.config.jwt import hash_password
 from app.controllers.rol import RolController
 from app.controllers.usuario import UsuarioController
 from app.models.rol import NombreRol
-from app.models.usuario import CreateUsuarioSchema
+from app.models.create_usuario_schema import CreateUsuarioSchema
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")

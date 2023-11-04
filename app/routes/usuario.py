@@ -20,11 +20,8 @@ from app.config.jwt import (
 from app.controllers.rol import RolController
 from app.controllers.usuario import UsuarioController
 from app.models.rol import NombreRol
-from app.models.usuario import (
-    CreateUsuarioSchema,
-    LoginUsuarioSchema,
-    ResponseUsuarioSchema,
-)
+from app.models.create_usuario_schema import CreateUsuarioSchema
+from app.models.login_usuario_schema import LoginUsuarioSchema
 
 router = APIRouter()
 
@@ -34,7 +31,6 @@ rol_controller = RolController()
 
 @router.post(
     "/",
-    # response_model=ResponseUsuarioSchema,
     status_code=status.HTTP_201_CREATED,
 )
 def create_usuario(

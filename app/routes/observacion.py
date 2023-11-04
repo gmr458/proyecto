@@ -7,7 +7,7 @@ from app.controllers.observacion import ObservacionController
 from app.controllers.rol import RolController
 from app.controllers.tarea import TareaController
 from app.controllers.usuario import UsuarioController
-from app.models.observacion import CreateObservacionSchema
+from app.models.observacion_base_schema import ObservacionBaseSchema
 from app.models.rol import NombreRol
 
 router = APIRouter()
@@ -21,12 +21,9 @@ observacion_controller = ObservacionController()
 @router.post("/tarea/{tarea_id}", status_code=status.HTTP_201_CREATED)
 def create_tarea(
     tarea_id: int,
-    payload: CreateObservacionSchema,
+    payload: ObservacionBaseSchema,
     current_user: Annotated[dict[str, Any], Depends(get_current_user)],
 ):
-    print(tarea_id)
-    print(payload)
-
     roles = rol_controller.get_by_user_id(current_user["id"])
 
     es_empleado = False
@@ -49,7 +46,7 @@ def create_tarea(
             detail="No puede crear observaciones para una tarea que no existe",
         )
 
-    if current_user["id"] != tarea_found["usuario_id"]:
+    if current_user["id"] != tarea_found["empleado_id"]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="No tiene permisos para hacer esta operación",
@@ -96,7 +93,7 @@ def obtener_observacion_de_una_tarea(
             detail="No existe esa tarea y por lo tanto tampoco observaciones",
         )
 
-    if es_empleado and current_user["id"] != tarea_found["usuario_id"]:
+    if es_empleado and current_user["id"] != tarea_found["empleado_id"]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="No tiene permisos para hacer esta operación",
@@ -147,7 +144,7 @@ def obtener_una_observacion(
             detail="Tara a la que pertenece la observación no encontrada",
         )
 
-    if es_empleado and current_user["id"] != tarea["usuario_id"]:
+    if es_empleado and current_user["id"] != tarea["empleado_id"]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="No tiene permisos para hacer esta operación",

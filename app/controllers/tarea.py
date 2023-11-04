@@ -1,9 +1,9 @@
 from app.config.database import get_mysql_connection
-from app.models.tarea import CreateTareaSchema
+from app.models.tarea_base_schema import TareaBaseSchema
 
 
 class TareaController:
-    def create(self, tarea: CreateTareaSchema):
+    def create(self, tarea: TareaBaseSchema):
         connection = get_mysql_connection()
 
         try:
@@ -193,7 +193,7 @@ class TareaController:
         except Exception as e:
             raise e
 
-    def update_by_id(self, id: int, tarea: CreateTareaSchema):
+    def update_by_id(self, id: int, tarea: TareaBaseSchema):
         connection = get_mysql_connection()
 
         try:

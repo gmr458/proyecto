@@ -7,7 +7,7 @@ from app.controllers.rol import RolController
 from app.controllers.tarea import TareaController
 from app.controllers.usuario import UsuarioController
 from app.models.rol import NombreRol
-from app.models.tarea import CreateTareaSchema
+from app.models.tarea_base_schema import TareaBaseSchema
 
 
 router = APIRouter()
@@ -19,7 +19,7 @@ rol_controller = RolController()
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create_tarea(
-    payload: CreateTareaSchema,
+    payload: TareaBaseSchema,
     current_user: Annotated[dict[str, Any], Depends(get_current_user)],
 ):
     roles = rol_controller.get_by_user_id(current_user["id"])
@@ -161,7 +161,7 @@ def get_one_tarea(
             detail="Tarea no encontrada",
         )
 
-    if es_empleado and current_user["id"] != tarea["usuario_id"]:
+    if es_empleado and current_user["id"] != tarea["empleado_id"]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="No tiene permisos para hacer esta operación",
@@ -338,7 +338,7 @@ def get_count_ejecutadas(
 )
 def update_tarea(
     tarea_id: int,
-    payload: CreateTareaSchema,
+    payload: TareaBaseSchema,
     current_user: Annotated[dict[str, Any], Depends(get_current_user)],
 ):
     roles = rol_controller.get_by_user_id(current_user["id"])

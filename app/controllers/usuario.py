@@ -1,5 +1,5 @@
 from app.config.database import get_mysql_connection
-from app.models.usuario import CreateUsuarioSchema
+from app.models.create_usuario_schema import CreateUsuarioSchema
 
 
 class UsuarioController:

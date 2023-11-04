@@ -1,14 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, constr
-
-
-class ObservacionBaseSchema(BaseModel):
-    contenido: str = constr(min_length=110)
-
-
-class CreateObservacionSchema(ObservacionBaseSchema):
-    pass
+from app.models.observacion_base_schema import ObservacionBaseSchema
 
 
 class Observacion(ObservacionBaseSchema):

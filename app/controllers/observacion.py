@@ -1,9 +1,9 @@
 from app.config.database import get_mysql_connection
-from app.models.observacion import CreateObservacionSchema
+from app.models.observacion_base_schema import ObservacionBaseSchema
 
 
 class ObservacionController:
-    def create(self, observacion: CreateObservacionSchema, tarea_id: int):
+    def create(self, observacion: ObservacionBaseSchema, tarea_id: int):
         connection = get_mysql_connection()
         inserted_id = None
 
