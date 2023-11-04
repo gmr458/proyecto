@@ -47,7 +47,7 @@ class UsuarioController:
                         """INSERT INTO `roles_usuario` (
                             `usuario_id`,
                             `rol_id`
-                        ) VALUES (%, %s)""",
+                        ) VALUES (%s, %s)""",
                         (
                             user_id,
                             usuario.rol_id,
