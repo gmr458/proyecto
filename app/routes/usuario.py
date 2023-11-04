@@ -175,10 +175,19 @@ async def upload_file(
                 "cause": "file",
             },
         )
-    
+
     dataframe = pd.read_excel(file.file.read())
 
-    validate_fields = ["nombre", "apellido", "code_country", "phone_number", "email", "contrasena", "numero_documento", "rol_id"]
+    validate_fields = [
+        "nombre",
+        "apellido",
+        "code_country",
+        "phone_number",
+        "email",
+        "contrasena",
+        "numero_documento",
+        "rol_id",
+    ]
     for field in validate_fields:
         if field not in dataframe.columns:
             raise HTTPException(
