@@ -97,7 +97,7 @@ def get_all_tareas(current_user: Annotated[dict[str, Any], Depends(get_current_u
 
     tareas = tarea_controller.get_all()
 
-    return {"tareas": tareas}
+    return {"msg": "Todas las tareas", "data": {"tasks": tareas}}
 
 
 @router.get(
@@ -124,7 +124,7 @@ def get_mis_tareas(
 
     tareas = tarea_controller.get_by_usuario_id(current_user["id"])
 
-    return {"tareas": tareas}
+    return {"msg": "Todas las tareas", "data": {"tasks": tareas}}
 
 
 @router.get(

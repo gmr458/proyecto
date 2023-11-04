@@ -40,7 +40,30 @@ class TareaController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT * FROM `tarea`"
+                    query = """
+                        SELECT
+                            t.id,
+                            t.titulo,
+                            t.prioridad,
+                            t.tipo,
+                            empleado.id AS empleado_id,
+                            empleado.email AS empleado_email,
+                            empleado.nombre AS empleado_nombre,
+                            empleado.apellido AS empleado_apellido,
+                            creador.id AS creador_id,
+                            creador.email AS creador_email,
+                            creador.nombre AS creador_nombre,
+                            creador.apellido AS creador_apellido,
+                            t.fecha_creacion,
+                            t.fecha_limite,
+                            t.evidencia,
+                            t.estado
+                        FROM tarea t
+                        LEFT JOIN usuario empleado
+                            ON empleado.id = t.empleado_id
+                        LEFT JOIN usuario creador
+                            ON creador.id = t.creador_id
+                    """
                     cursor.execute(query)
                     tareas = cursor.fetchall()
                     return tareas
@@ -53,7 +76,31 @@ class TareaController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT * FROM `tarea` WHERE `usuario_id` = %s"
+                    query = """
+                        SELECT
+                            t.id,
+                            t.titulo,
+                            t.prioridad,
+                            t.tipo,
+                            empleado.id AS empleado_id,
+                            empleado.email AS empleado_email,
+                            empleado.nombre AS empleado_nombre,
+                            empleado.apellido AS empleado_apellido,
+                            creador.id AS creador_id,
+                            creador.email AS creador_email,
+                            creador.nombre AS creador_nombre,
+                            creador.apellido AS creador_apellido,
+                            t.fecha_creacion,
+                            t.fecha_limite,
+                            t.evidencia,
+                            t.estado
+                        FROM tarea t
+                        LEFT JOIN usuario empleado
+                            ON empleado.id = t.empleado_id
+                        LEFT JOIN usuario creador
+                            ON creador.id = t.creador_id
+                        WHERE t.empleado_id = %s
+                    """
                     cursor.execute(query, (id,))
                     tareas = cursor.fetchall()
                     return tareas

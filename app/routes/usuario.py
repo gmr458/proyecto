@@ -284,11 +284,12 @@ def login(payload: LoginUsuarioSchema):
     }
 
 
-@router.get(
-    "/perfil", response_model=ResponseUsuarioSchema, status_code=status.HTTP_200_OK
-)
+@router.get("/perfil", status_code=status.HTTP_200_OK)
 def mi_perfil(
-    current_user: Annotated[ResponseUsuarioSchema, Depends(get_current_user)]
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
 ):
     return current_user
 
