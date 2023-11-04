@@ -175,8 +175,21 @@ async def upload_file(
                 "cause": "file",
             },
         )
-
+    
     dataframe = pd.read_excel(file.file.read())
+
+    validate_fields = ["nombre", "apellido", "code_country", "phone_number", "email", "contrasena", "numero_documento", "rol_id"]
+    for field in validate_fields:
+        if field not in dataframe.columns:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "msg": """El archivo Excel no cumple con la estructura requerida,
+                        debe tener las columnas nombre, apellido, code_country, phone_number, email,
+                        contrasena, numero_documento y rol_id.""",
+                    "cause": "file",
+                },
+            )
 
     dataframe["code_country"] = dataframe["code_country"].astype(str)
     dataframe["phone_number"] = dataframe["phone_number"].astype(str)
