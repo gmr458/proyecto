@@ -58,6 +58,8 @@ for i in range(4):
     admins.append(admin)
     id = id + 1
 
+print(f"{datetime.now()} - admins generated")
+
 employees: list[User] = []
 
 for i in range(25):
@@ -77,9 +79,11 @@ for i in range(25):
     admins.append(admin)
     id = id + 1
 
+print(f"{datetime.now()} - employees generated")
+
 tasks: list[Task] = []
 
-for i in range(200):
+for i in range(348):
     task = Task(
         titulo=text.sentence(),
         prioridad=generic.random.choice(["baja", "media", "alta"]),
@@ -90,6 +94,8 @@ for i in range(200):
         estado=generic.random.choice(["sin_iniciar", "en_proceso", "ejecutada"]),
     )
     tasks.append(task)
+
+print(f"{datetime.now()} - tasks generated")
 
 
 def create_users(users: list[User]):
@@ -151,7 +157,10 @@ def create_users(users: list[User]):
 
 
 create_users(admins)
+print(f"{datetime.now()} - admins inserted in the database")
+
 create_users(employees)
+print(f"{datetime.now()} - employees inserted in the database")
 
 
 def create_tasks(tasks: list[Task]):
@@ -190,3 +199,4 @@ def create_tasks(tasks: list[Task]):
 
 
 create_tasks(tasks)
+print(f"{datetime.now()} - tasks inserted in the database")
