@@ -86,6 +86,66 @@ class TareaController:
         except Exception as e:
             raise e
 
+    def get_count_all(self) -> int:
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "SELECT COUNT(*) total_tasks FROM `tarea`"
+                    cursor.execute(query)
+                    result = cursor.fetchone()
+                    if result is None:
+                        return 0
+                    return result["total_tasks"]
+        except Exception as e:
+            raise e
+
+    def get_count_sin_iniciar(self) -> int:
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "SELECT COUNT(*) tareas_sin_iniciar FROM `tarea` WHERE estado = 'sin_iniciar'"
+                    cursor.execute(query)
+                    result = cursor.fetchone()
+                    if result is None:
+                        return 0
+                    return result["tareas_sin_iniciar"]
+        except Exception as e:
+            raise e
+
+    def get_count_en_proceso(self) -> int:
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "SELECT COUNT(*) tareas_en_proceso FROM `tarea` WHERE estado = 'en_proceso'"
+                    cursor.execute(query)
+                    result = cursor.fetchone()
+                    if result is None:
+                        return 0
+                    return result["tareas_en_proceso"]
+        except Exception as e:
+            raise e
+
+    def get_count_ejecutadas(self) -> int:
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "SELECT COUNT(*) tareas_ejecutadas FROM `tarea` WHERE estado = 'ejecutada'"
+                    cursor.execute(query)
+                    result = cursor.fetchone()
+                    if result is None:
+                        return 0
+                    return result["tareas_ejecutadas"]
+        except Exception as e:
+            raise e
+
     def update_by_id(self, id: int, tarea: CreateTareaSchema):
         connection = get_mysql_connection()
 

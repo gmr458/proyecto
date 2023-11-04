@@ -220,6 +220,118 @@ def get_all_tareas_by_usuario_id(
     return {"tareas": tareas}
 
 
+@router.get("/count/all")
+def get_count_all(current_user: Annotated[dict[str, Any], Depends(get_current_user)]):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    total_tasks = tarea_controller.get_count_all()
+
+    return {"msg": "Total tareas", "data": {"total_tasks": total_tasks}}
+
+
+@router.get("/count/sin_iniciar")
+def get_count_sin_iniciar(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    tareas_sin_iniciar = tarea_controller.get_count_sin_iniciar()
+
+    return {
+        "msg": "Total tareas sin iniciar",
+        "data": {"tareas_sin_iniciar": tareas_sin_iniciar},
+    }
+
+
+@router.get("/count/en_proceso")
+def get_count_en_proceso(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    tareas_en_proceso = tarea_controller.get_count_en_proceso()
+
+    return {
+        "msg": "Total tareas en proceso",
+        "data": {"tareas_en_proceso": tareas_en_proceso},
+    }
+
+
+@router.get("/count/ejecutadas")
+def get_count_ejecutadas(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    tareas_ejecutadas = tarea_controller.get_count_ejecutadas()
+
+    return {
+        "msg": "Total tareas ejecutadas",
+        "data": {"tareas_ejecutadas": tareas_ejecutadas},
+    }
+
+
 @router.put(
     "/{tarea_id}",
     status_code=status.HTTP_200_OK,

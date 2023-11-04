@@ -291,3 +291,57 @@ def mi_perfil(
     current_user: Annotated[ResponseUsuarioSchema, Depends(get_current_user)]
 ):
     return current_user
+
+
+@router.get("/all")
+def get_all(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    users = usuario_controller.get_all()
+
+    return {"msg": "Todos los usuarios", "data": {"users": users}}
+
+
+@router.get("/top/tareas/ejecutadas")
+def get_top_tareas_ejecutadas(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    users = usuario_controller.get_top_5_mas_tareas_ejecutadas()
+
+    return {"msg": "Top 5 usuarios con más tareas ejecutadas", "data": {"users": users}}

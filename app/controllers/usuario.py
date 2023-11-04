@@ -171,3 +171,64 @@ class UsuarioController:
                     return usuario
         except Exception as e:
             raise e
+
+    def get_all(self):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        SELECT
+                            usuario.`id`,
+                            usuario.`nombre`,
+                            usuario.`apellido`,
+                            usuario.`email`,
+                            usuario.`contrasena`,
+                            usuario.`numero_documento`,
+                            usuario.`fecha_creacion`,
+                            usuario.`activado`,
+                            telefono.`code_country`,
+                            telefono.`number`
+                        FROM `usuario`
+                        INNER JOIN `telefono`
+                            ON usuario.`id` = telefono.`usuario_id`
+                    """
+                    cursor.execute(query)
+                    usuarios = cursor.fetchall()
+                    return usuarios
+        except Exception as e:
+            raise e
+
+    def get_top_5_mas_tareas_ejecutadas(self):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        SELECT
+                            usuario.id,
+                            usuario.nombre,
+                            usuario.apellido,
+                            usuario.email,
+                            usuario.numero_documento,
+                            usuario.fecha_creacion,
+                            usuario.activado,
+                            telefono.code_country,
+                            telefono.number,
+                            COUNT(*) as tareas_ejecutadas
+                        FROM usuario
+                        LEFT JOIN tarea
+                            ON usuario.id = tarea.empleado_id
+                        LEFT JOIN telefono ON usuario.id = telefono.usuario_id
+                        WHERE tarea.estado = 'ejecutada'
+                        GROUP BY usuario.id, telefono.code_country, telefono.number
+                        ORDER BY tareas_ejecutadas DESC
+                        LIMIT 5
+                    """
+                    cursor.execute(query)
+                    usuarios = cursor.fetchall()
+                    return usuarios
+        except Exception as e:
+            raise e
