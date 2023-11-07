@@ -41,15 +41,11 @@ def crear_usuario_admin():
 
     user_found = usuario_controller.get_by_email(usuario.email.lower())
     if user_found is not None:
+        print("admin user already exists")
         return
 
     usuario.contrasena = hash_password(str(usuario.contrasena))
     usuario.email = usuario.email.lower()
 
     usuario_controller.create(usuario)
-
-    usuario_admin = usuario_controller.get_by_email(usuario.email)
-    if usuario_admin is None:
-        raise UsuarioAdminNotFound
-
-    rol_controller.create_para_usuario(usuario.rol_id, usuario_admin["id"])
+    print("admin user created")

@@ -10,14 +10,17 @@ class ObservacionController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = """INSERT INTO `observacion` (
-                        `tarea_id`,
-                        `contenido`
-                    ) VALUES (%s, %s)"""
                     cursor.execute(
-                        query,
+                        """
+                        INSERT INTO observacion (
+                            tarea_id,
+                            creador_id,
+                            contenido
+                        ) VALUES (%s, %s, %s)
+                        """,
                         (
                             tarea_id,
+                            observacion.creador_id,
                             observacion.contenido,
                         ),
                     )
@@ -48,6 +51,19 @@ class ObservacionController:
                 with connection.cursor() as cursor:
                     query = "SELECT * FROM `observacion` WHERE `tarea_id` = %s"
                     cursor.execute(query, (tarea_id,))
+                    tareas = cursor.fetchall()
+                    return tareas
+        except Exception as e:
+            raise e
+
+    def get_by_creador_id(self, creador_id: int):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "SELECT * FROM `observacion` WHERE `creador_id` = %s"
+                    cursor.execute(query, (creador_id,))
                     tareas = cursor.fetchall()
                     return tareas
         except Exception as e:

@@ -9,44 +9,35 @@ class UsuarioController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = """INSERT INTO `usuario` (
-                        `nombre`,
-                        `apellido`,
-                        `email`,
-                        `contrasena`,
-                        `numero_documento`,
-                        `activado`
-                    ) VALUES (%s, %s, %s, %s, %s, %s)"""
                     cursor.execute(
-                        query,
+                        """
+                        INSERT INTO usuario (
+                            nombre,
+                            apellido,
+                            email,
+                            contrasena,
+                            numero_documento,
+                            code_country,
+                            phone_number,
+                            activado
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        """,
                         (
                             usuario.nombre,
                             usuario.apellido,
                             usuario.email,
                             usuario.contrasena,
                             usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
                             True,
                         ),
                     )
-
                     user_id = cursor.lastrowid
-
                     cursor.execute(
-                        """INSERT INTO `telefono` (
-                            `usuario_id`,
-                            `code_country`,
-                            `number`
-                        ) VALUES (%s, %s, %s)""",
-                        (
-                            user_id,
-                            usuario.code_country,
-                            usuario.phone_number,
-                        ),
-                    )
-                    cursor.execute(
-                        """INSERT INTO `roles_usuario` (
-                            `usuario_id`,
-                            `rol_id`
+                        """INSERT INTO roles_usuario (
+                            usuario_id,
+                            rol_id
                         ) VALUES (%s, %s)""",
                         (
                             user_id,
@@ -63,21 +54,26 @@ class UsuarioController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = """SELECT
-                            usuario.`id`,
-                            usuario.`nombre`,
-                            usuario.`apellido`,
-                            usuario.`email`,
-                            usuario.`contrasena`,
-                            usuario.`numero_documento`,
-                            usuario.`fecha_creacion`,
-                            usuario.`activado`,
-                            telefono.`code_country`,
-                            telefono.`number`
-                        FROM `usuario`
-                        INNER JOIN `telefono`
-                            ON usuario.`id` = telefono.`usuario_id`
-                        WHERE usuario.`id` = %s"""
+                    query = """
+                        SELECT
+                            usuario.id,
+                            usuario.nombre,
+                            usuario.apellido,
+                            usuario.email,
+                            usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
+                            usuario.fecha_creacion,
+                            usuario.activado,
+                            GROUP_CONCAT(rol.nombre) AS roles
+                        FROM usuario
+                        JOIN roles_usuario
+                            ON roles_usuario.usuario_id = usuario.id
+                        JOIN rol
+                            ON rol.id = roles_usuario.rol_id
+                        WHERE usuario.id = %s
+                        GROUP BY usuario.id
+                    """
                     cursor.execute(query, (id,))
                     usuario = cursor.fetchone()
                     return usuario
@@ -90,21 +86,27 @@ class UsuarioController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = """SELECT
-                            usuario.`id`,
-                            usuario.`nombre`,
-                            usuario.`apellido`,
-                            usuario.`email`,
-                            usuario.`contrasena`,
-                            usuario.`numero_documento`,
-                            usuario.`fecha_creacion`,
-                            usuario.`activado`,
-                            telefono.`code_country`,
-                            telefono.`number`
-                        FROM `usuario`
-                        INNER JOIN `telefono`
-                            ON usuario.`id` = telefono.`usuario_id`
-                        WHERE usuario.`email` = %s"""
+                    query = """
+                        SELECT
+                            usuario.id,
+                            usuario.nombre,
+                            usuario.apellido,
+                            usuario.email,
+                            usuario.contrasena,
+                            usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
+                            usuario.fecha_creacion,
+                            usuario.activado,
+                            GROUP_CONCAT(rol.nombre) AS roles
+                        FROM usuario
+                        JOIN roles_usuario
+                            ON roles_usuario.usuario_id = usuario.id
+                        JOIN rol
+                            ON rol.id = roles_usuario.rol_id
+                        WHERE usuario.email = %s
+                        GROUP BY usuario.id
+                    """
                     cursor.execute(query, (email,))
                     usuario = cursor.fetchone()
                     return usuario
@@ -117,56 +119,61 @@ class UsuarioController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = """SELECT
-                            usuario.`id`,
-                            usuario.`nombre`,
-                            usuario.`apellido`,
-                            usuario.`email`,
-                            usuario.`contrasena`,
-                            usuario.`numero_documento`,
-                            usuario.`fecha_creacion`,
-                            usuario.`activado`,
-                            telefono.`code_country`,
-                            telefono.`number`
-                        FROM `usuario`
-                        INNER JOIN `telefono`
-                            ON usuario.`id` = telefono.`usuario_id`
-                        WHERE usuario.`numero_documento` = %s"""
+                    query = """
+                        SELECT
+                            usuario.id,
+                            usuario.nombre,
+                            usuario.apellido,
+                            usuario.email,
+                            usuario.contrasena,
+                            usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
+                            usuario.fecha_creacion,
+                            usuario.activado,
+                            GROUP_CONCAT(rol.nombre) AS roles
+                        FROM usuario
+                        JOIN roles_usuario
+                            ON roles_usuario.usuario_id = usuario.id
+                        JOIN rol
+                            ON rol.id = roles_usuario.rol_id
+                        WHERE usuario.numero_documento = %s
+                        GROUP BY usuario.id
+                    """
                     cursor.execute(query, (numero_documento,))
                     usuario = cursor.fetchone()
                     return usuario
         except Exception as e:
             raise e
 
-    def get_by_telefono(self, code_country: str, telefono: str):
+    def get_by_telefono(self, phone_number: str):
         connection = get_mysql_connection()
 
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = """SELECT
-                            usuario.`id`,
-                            usuario.`nombre`,
-                            usuario.`apellido`,
-                            usuario.`email`,
-                            usuario.`contrasena`,
-                            usuario.`numero_documento`,
-                            usuario.`fecha_creacion`,
-                            usuario.`activado`,
-                            telefono.`code_country`,
-                            telefono.`number`
-                        FROM `usuario`
-                        INNER JOIN `telefono`
-                            ON usuario.`id` = telefono.`usuario_id`
-                        WHERE telefono.`code_country` = %s
-                            AND telefono.`number` = %s"""
-                    cursor.execute(
-                        query,
-                        (
-                            code_country,
-                            telefono,
-                        ),
-                    )
+                    query = """
+                        SELECT
+                            usuario.id,
+                            usuario.nombre,
+                            usuario.apellido,
+                            usuario.email,
+                            usuario.contrasena,
+                            usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
+                            usuario.fecha_creacion,
+                            usuario.activado,
+                            GROUP_CONCAT(rol.nombre) AS roles
+                        FROM usuario
+                        JOIN roles_usuario
+                            ON roles_usuario.usuario_id = usuario.id
+                        JOIN rol
+                            ON rol.id = roles_usuario.rol_id
+                        WHERE usuario.phone_number = %s
+                        GROUP BY usuario.id
+                    """
+                    cursor.execute(query, (phone_number,))
                     usuario = cursor.fetchone()
                     return usuario
         except Exception as e:
@@ -180,19 +187,22 @@ class UsuarioController:
                 with connection.cursor() as cursor:
                     query = """
                         SELECT
-                            usuario.`id`,
-                            usuario.`nombre`,
-                            usuario.`apellido`,
-                            usuario.`email`,
-                            usuario.`contrasena`,
-                            usuario.`numero_documento`,
-                            usuario.`fecha_creacion`,
-                            usuario.`activado`,
-                            telefono.`code_country`,
-                            telefono.`number`
-                        FROM `usuario`
-                        INNER JOIN `telefono`
-                            ON usuario.`id` = telefono.`usuario_id`
+                            usuario.id,
+                            usuario.nombre,
+                            usuario.apellido,
+                            usuario.email,
+                            usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
+                            usuario.fecha_creacion,
+                            usuario.activado,
+                            GROUP_CONCAT(rol.nombre) AS roles
+                        FROM usuario
+                        JOIN roles_usuario
+                            ON roles_usuario.usuario_id = usuario.id
+                        JOIN rol
+                            ON rol.id = roles_usuario.rol_id
+                        GROUP BY usuario.email
                     """
                     cursor.execute(query)
                     usuarios = cursor.fetchall()
@@ -200,7 +210,7 @@ class UsuarioController:
         except Exception as e:
             raise e
 
-    def get_top_5_mas_tareas_ejecutadas(self):
+    def get_top_mas_tareas_ejecutadas(self):
         connection = get_mysql_connection()
 
         try:
@@ -213,19 +223,110 @@ class UsuarioController:
                             usuario.apellido,
                             usuario.email,
                             usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
                             usuario.fecha_creacion,
                             usuario.activado,
-                            telefono.code_country,
-                            telefono.number,
                             COUNT(*) as tareas_ejecutadas
                         FROM usuario
                         LEFT JOIN tarea
                             ON usuario.id = tarea.empleado_id
-                        LEFT JOIN telefono ON usuario.id = telefono.usuario_id
                         WHERE tarea.estado = 'ejecutada'
-                        GROUP BY usuario.id, telefono.code_country, telefono.number
+                        GROUP BY usuario.id
                         ORDER BY tareas_ejecutadas DESC
-                        LIMIT 5
+                    """
+                    cursor.execute(query)
+                    usuarios = cursor.fetchall()
+                    return usuarios
+        except Exception as e:
+            raise e
+
+    def get_top_mas_tareas_en_proceso(self):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        SELECT
+                            usuario.id,
+                            usuario.nombre,
+                            usuario.apellido,
+                            usuario.email,
+                            usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
+                            usuario.fecha_creacion,
+                            usuario.activado,
+                            COUNT(*) as tareas_en_proceso
+                        FROM usuario
+                        LEFT JOIN tarea
+                            ON usuario.id = tarea.empleado_id
+                        WHERE tarea.estado = 'en_proceso'
+                        GROUP BY usuario.id
+                        ORDER BY tareas_en_proceso DESC
+                    """
+                    cursor.execute(query)
+                    usuarios = cursor.fetchall()
+                    return usuarios
+        except Exception as e:
+            raise e
+
+    def get_top_mas_tareas_sin_iniciar(self):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        SELECT
+                            usuario.id,
+                            usuario.nombre,
+                            usuario.apellido,
+                            usuario.email,
+                            usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
+                            usuario.fecha_creacion,
+                            usuario.activado,
+                            COUNT(*) as tareas_sin_iniciar
+                        FROM usuario
+                        LEFT JOIN tarea
+                            ON usuario.id = tarea.empleado_id
+                        WHERE tarea.estado = 'sin_iniciar'
+                        GROUP BY usuario.id
+                        ORDER BY tareas_sin_iniciar DESC
+                    """
+                    cursor.execute(query)
+                    usuarios = cursor.fetchall()
+                    return usuarios
+        except Exception as e:
+            raise e
+
+    def get_top_mas_tareas_asignadas(self):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        SELECT
+                            usuario.id,
+                            usuario.nombre,
+                            usuario.apellido,
+                            usuario.email,
+                            usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
+                            usuario.fecha_creacion,
+                            usuario.activado,
+                            COUNT(*) as tareas_asignadas
+                        FROM usuario
+                        LEFT JOIN tarea
+                            ON usuario.id = tarea.empleado_id
+                        WHERE usuario.id = tarea.empleado_id
+                        GROUP BY usuario.id
+                        ORDER BY tareas_asignadas DESC
                     """
                     cursor.execute(query)
                     usuarios = cursor.fetchall()

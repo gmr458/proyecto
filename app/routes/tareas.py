@@ -171,11 +171,11 @@ def get_one_tarea(
 
 
 @router.get(
-    "/usuario/{usuario_id}",
+    "/empleado/{empleado_id}",
     status_code=status.HTTP_200_OK,
 )
-def get_all_tareas_by_usuario_id(
-    usuario_id: int,
+def get_all_tareas_by_empleado_id(
+    empleado_id: int,
     current_user: Annotated[dict[str, Any], Depends(get_current_user)],
 ):
     roles = rol_controller.get_by_user_id(current_user["id"])
@@ -193,7 +193,7 @@ def get_all_tareas_by_usuario_id(
             detail="No tiene permisos para hacer esta operación",
         )
 
-    usuario_found = usuario_controller.get_by_id(usuario_id)
+    usuario_found = usuario_controller.get_by_id(empleado_id)
     if usuario_found is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -215,7 +215,7 @@ def get_all_tareas_by_usuario_id(
             detail="Un administrador no tiene tareas asignadas",
         )
 
-    tareas = tarea_controller.get_by_usuario_id(usuario_id)
+    tareas = tarea_controller.get_by_usuario_id(empleado_id)
 
     return {"tareas": tareas}
 

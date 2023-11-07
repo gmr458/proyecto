@@ -9,21 +9,21 @@ class TareaController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = """INSERT INTO `tarea` (
-                        `titulo`,
-                        `prioridad`,
-                        `tipo`,
-                        `empleado_id`,
-                        `creador_id`,
-                        `fecha_limite`,
-                        `evidencia`
+                    query = """INSERT INTO tarea (
+                        titulo,
+                        prioridad,
+                        tipo_id,
+                        empleado_id,
+                        creador_id,
+                        fecha_limite,
+                        evidencia
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
                     cursor.execute(
                         query,
                         (
                             tarea.titulo,
                             tarea.prioridad,
-                            tarea.tipo,
+                            tarea.tipo_id,
                             tarea.empleado_id,
                             tarea.creador_id,
                             tarea.fecha_limite,
@@ -42,10 +42,12 @@ class TareaController:
                 with connection.cursor() as cursor:
                     query = """
                         SELECT
-                            t.id,
-                            t.titulo,
-                            t.prioridad,
-                            t.tipo,
+                            tarea.id,
+                            tarea.titulo,
+                            tarea.prioridad,
+                            tipo_tarea.id AS tipo_tarea_id,
+                            tipo_tarea.nombre AS tipo_tarea,
+                            tipo_tarea.descripcion AS tipo_tarea_descripcion,
                             empleado.id AS empleado_id,
                             empleado.email AS empleado_email,
                             empleado.nombre AS empleado_nombre,
@@ -54,15 +56,17 @@ class TareaController:
                             creador.email AS creador_email,
                             creador.nombre AS creador_nombre,
                             creador.apellido AS creador_apellido,
-                            t.fecha_creacion,
-                            t.fecha_limite,
-                            t.evidencia,
-                            t.estado
-                        FROM tarea t
+                            tarea.fecha_creacion,
+                            tarea.fecha_limite,
+                            tarea.evidencia,
+                            tarea.estado
+                        FROM tarea
                         LEFT JOIN usuario empleado
-                            ON empleado.id = t.empleado_id
+                            ON empleado.id = tarea.empleado_id
                         LEFT JOIN usuario creador
-                            ON creador.id = t.creador_id
+                            ON creador.id = tarea.creador_id
+                        LEFT JOIN tipo_tarea
+                            ON tipo_tarea.id = tarea.tipo_id
                     """
                     cursor.execute(query)
                     tareas = cursor.fetchall()
@@ -78,10 +82,12 @@ class TareaController:
                 with connection.cursor() as cursor:
                     query = """
                         SELECT
-                            t.id,
-                            t.titulo,
-                            t.prioridad,
-                            t.tipo,
+                            tarea.id,
+                            tarea.titulo,
+                            tarea.prioridad,
+                            tipo_tarea.id AS tipo_tarea_id,
+                            tipo_tarea.nombre AS tipo_tarea,
+                            tipo_tarea.descripcion AS tipo_tarea_descripcion,
                             empleado.id AS empleado_id,
                             empleado.email AS empleado_email,
                             empleado.nombre AS empleado_nombre,
@@ -90,16 +96,18 @@ class TareaController:
                             creador.email AS creador_email,
                             creador.nombre AS creador_nombre,
                             creador.apellido AS creador_apellido,
-                            t.fecha_creacion,
-                            t.fecha_limite,
-                            t.evidencia,
-                            t.estado
-                        FROM tarea t
+                            tarea.fecha_creacion,
+                            tarea.fecha_limite,
+                            tarea.evidencia,
+                            tarea.estado
+                        FROM tarea
                         LEFT JOIN usuario empleado
-                            ON empleado.id = t.empleado_id
+                            ON empleado.id = tarea.empleado_id
                         LEFT JOIN usuario creador
-                            ON creador.id = t.creador_id
-                        WHERE t.empleado_id = %s
+                            ON creador.id = tarea.creador_id
+                        LEFT JOIN tipo_tarea
+                            ON tipo_tarea.id = tarea.tipo_id
+                        WHERE tarea.empleado_id = %s
                     """
                     cursor.execute(query, (id,))
                     tareas = cursor.fetchall()
@@ -113,10 +121,38 @@ class TareaController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT * FROM `tarea` WHERE `id` = %s"
+                    query = """
+                        SELECT
+                            tarea.id,
+                            tarea.titulo,
+                            tarea.prioridad,
+                            tipo_tarea.id AS tipo_tarea_id,
+                            tipo_tarea.nombre AS tipo_tarea,
+                            tipo_tarea.descripcion AS tipo_tarea_descripcion,
+                            empleado.id AS empleado_id,
+                            empleado.email AS empleado_email,
+                            empleado.nombre AS empleado_nombre,
+                            empleado.apellido AS empleado_apellido,
+                            creador.id AS creador_id,
+                            creador.email AS creador_email,
+                            creador.nombre AS creador_nombre,
+                            creador.apellido AS creador_apellido,
+                            tarea.fecha_creacion,
+                            tarea.fecha_limite,
+                            tarea.evidencia,
+                            tarea.estado
+                        FROM tarea
+                        LEFT JOIN usuario empleado
+                            ON empleado.id = tarea.empleado_id
+                        LEFT JOIN usuario creador
+                            ON creador.id = tarea.creador_id
+                        LEFT JOIN tipo_tarea
+                            ON tipo_tarea.id = tarea.tipo_id
+                        WHERE tarea.id = %s
+                    """
                     cursor.execute(query, (id,))
-                    tareas = cursor.fetchone()
-                    return tareas
+                    tarea = cursor.fetchone()
+                    return tarea
         except Exception as e:
             raise e
 
@@ -126,10 +162,38 @@ class TareaController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT * FROM `tarea` WHERE `titulo` = %s"
+                    query = """
+                        SELECT
+                            tarea.id,
+                            tarea.titulo,
+                            tarea.prioridad,
+                            tipo_tarea.id AS tipo_tarea_id,
+                            tipo_tarea.nombre AS tipo_tarea,
+                            tipo_tarea.descripcion AS tipo_tarea_descripcion,
+                            empleado.id AS empleado_id,
+                            empleado.email AS empleado_email,
+                            empleado.nombre AS empleado_nombre,
+                            empleado.apellido AS empleado_apellido,
+                            creador.id AS creador_id,
+                            creador.email AS creador_email,
+                            creador.nombre AS creador_nombre,
+                            creador.apellido AS creador_apellido,
+                            tarea.fecha_creacion,
+                            tarea.fecha_limite,
+                            tarea.evidencia,
+                            tarea.estado
+                        FROM tarea
+                        LEFT JOIN usuario empleado
+                            ON empleado.id = tarea.empleado_id
+                        LEFT JOIN usuario creador
+                            ON creador.id = tarea.creador_id
+                        LEFT JOIN tipo_tarea
+                            ON tipo_tarea.id = tarea.tipo_id
+                        WHERE tarea.titulo = %s
+                    """
                     cursor.execute(query, (titulo,))
-                    tareas = cursor.fetchone()
-                    return tareas
+                    tarea = cursor.fetchone()
+                    return tarea
         except Exception as e:
             raise e
 
@@ -199,26 +263,28 @@ class TareaController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = """UPDATE `tarea` 
+                    query = """
+                        UPDATE `tarea` 
                         SET
-                            `titulo` = %s,
-                            `prioridad` = %s,
-                            `tipo` = %s,
-                            `empleado_id` = %s,
-                            `creador_id` = %s,
-                            `fecha_limite` = %s,
-                            `evidencia` = %s
-                        WHERE `id` = %s"""
+                            titulo = %s,
+                            prioridad = %s,
+                            tipo_id = %s,
+                            empleado_id = %s,
+                            fecha_limite = %s,
+                            evidencia = %s,
+                            estado = %s
+                        WHERE `id` = %s
+                    """
                     cursor.execute(
                         query,
                         (
                             tarea.titulo,
                             tarea.prioridad,
-                            tarea.tipo,
+                            tarea.tipo_id,
                             tarea.empleado_id,
-                            tarea.creador_id,
                             tarea.fecha_limite,
                             tarea.evidencia,
+                            tarea.estado,
                             id,
                         ),
                     )

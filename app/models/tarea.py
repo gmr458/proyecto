@@ -7,4 +7,3 @@ from app.models.tarea_base_schema import TareaBaseSchema
 class Tarea(TareaBaseSchema):
     id: int
     fecha_creacion: datetime
-    estado: Estado = Estado.sin_iniciar

@@ -72,10 +72,7 @@ def create_usuario(
             detail={"msg": "Número de telefono invalido", "cause": "number"},
         )
 
-    user_found = usuario_controller.get_by_telefono(
-        payload.code_country,
-        payload.phone_number,
-    )
+    user_found = usuario_controller.get_by_telefono(payload.phone_number)
     if user_found is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -361,6 +358,87 @@ def get_top_tareas_ejecutadas(
             detail="No tiene permisos para hacer esta operación",
         )
 
-    users = usuario_controller.get_top_5_mas_tareas_ejecutadas()
+    users = usuario_controller.get_top_mas_tareas_ejecutadas()
 
-    return {"msg": "Top 5 usuarios con más tareas ejecutadas", "data": {"users": users}}
+    return {"msg": "Top usuarios con más tareas ejecutadas", "data": {"users": users}}
+
+
+@router.get("/top/tareas/en_proceso")
+def get_top_tareas_en_proceso(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    users = usuario_controller.get_top_mas_tareas_en_proceso()
+
+    return {"msg": "Top usuarios con más tareas en proceso", "data": {"users": users}}
+
+
+@router.get("/top/tareas/sin_iniciar")
+def get_top_tareas_sin_iniciar(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    users = usuario_controller.get_top_mas_tareas_sin_iniciar()
+
+    return {"msg": "Top usuarios con más tareas sin iniciar", "data": {"users": users}}
+
+
+@router.get("/top/tareas/asignadas")
+def get_top_tareas_asignadas(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    users = usuario_controller.get_top_mas_tareas_asignadas()
+
+    return {"msg": "Top usuarios con más tareas asignadas", "data": {"users": users}}

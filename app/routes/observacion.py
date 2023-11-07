@@ -19,7 +19,7 @@ observacion_controller = ObservacionController()
 
 
 @router.post("/tarea/{tarea_id}", status_code=status.HTTP_201_CREATED)
-def create_tarea(
+def create_observacion(
     tarea_id: int,
     payload: ObservacionBaseSchema,
     current_user: Annotated[dict[str, Any], Depends(get_current_user)],
@@ -33,12 +33,6 @@ def create_tarea(
             es_empleado = True
             break
 
-    if es_empleado is False:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No tiene permisos para hacer esta operación",
-        )
-
     tarea_found = tarea_controller.get_by_id(tarea_id)
     if tarea_found is None:
         raise HTTPException(
@@ -46,12 +40,13 @@ def create_tarea(
             detail="No puede crear observaciones para una tarea que no existe",
         )
 
-    if current_user["id"] != tarea_found["empleado_id"]:
+    if es_empleado and current_user["id"] != tarea_found["empleado_id"]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="No tiene permisos para hacer esta operación",
         )
 
+    payload.creador_id = current_user["id"]
     inserted_id = observacion_controller.create(payload, tarea_id)
     observacion_creada = observacion_controller.get_by_id(inserted_id)
     if observacion_creada is None:
@@ -64,7 +59,7 @@ def create_tarea(
 
 
 @router.get("/tarea/{tarea_id}", status_code=status.HTTP_200_OK)
-def obtener_observacion_de_una_tarea(
+def obtener_observaciones_de_una_tarea(
     tarea_id: int,
     current_user: Annotated[dict[str, Any], Depends(get_current_user)],
 ):
@@ -164,13 +159,16 @@ def delete_observacion(
     roles = rol_controller.get_by_user_id(current_user["id"])
 
     es_empleado = False
+    es_admin = False
 
     for rol in roles:
         if rol["nombre"] == NombreRol.empleado:
             es_empleado = True
-            break
 
-    if es_empleado is False:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+
+    if es_empleado is False and es_admin is False:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="No tiene permisos para hacer esta operación",
@@ -182,6 +180,12 @@ def delete_observacion(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Observación no encontrada",
+        )
+
+    if es_empleado and current_user["id"] != observacion["creador_id"]:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
         )
 
     observacion_controller.delete_by_id(observacion_id)
