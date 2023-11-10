@@ -67,6 +67,7 @@ class TareaController:
                             ON creador.id = tarea.creador_id
                         LEFT JOIN tipo_tarea
                             ON tipo_tarea.id = tarea.tipo_id
+                        WHERE tarea.eliminado = false
                     """
                     cursor.execute(query)
                     tareas = cursor.fetchall()
@@ -107,7 +108,9 @@ class TareaController:
                             ON creador.id = tarea.creador_id
                         LEFT JOIN tipo_tarea
                             ON tipo_tarea.id = tarea.tipo_id
-                        WHERE tarea.empleado_id = %s
+                        WHERE
+                            tarea.eliminado = false
+                            AND tarea.empleado_id = %s
                     """
                     cursor.execute(query, (id,))
                     tareas = cursor.fetchall()
@@ -148,7 +151,9 @@ class TareaController:
                             ON creador.id = tarea.creador_id
                         LEFT JOIN tipo_tarea
                             ON tipo_tarea.id = tarea.tipo_id
-                        WHERE tarea.id = %s
+                        WHERE 
+                            tarea.eliminado = false
+                            AND tarea.id = %s
                     """
                     cursor.execute(query, (id,))
                     tarea = cursor.fetchone()
@@ -189,7 +194,9 @@ class TareaController:
                             ON creador.id = tarea.creador_id
                         LEFT JOIN tipo_tarea
                             ON tipo_tarea.id = tarea.tipo_id
-                        WHERE tarea.titulo = %s
+                        WHERE 
+                            tarea.eliminado = false
+                            AND tarea.titulo = %s
                     """
                     cursor.execute(query, (titulo,))
                     tarea = cursor.fetchone()
@@ -203,7 +210,11 @@ class TareaController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT COUNT(*) total_tasks FROM `tarea`"
+                    query = """
+                        SELECT COUNT(*) total_tasks 
+                        FROM tarea 
+                        WHERE eliminado = false
+                    """
                     cursor.execute(query)
                     result = cursor.fetchone()
                     if result is None:
@@ -218,7 +229,13 @@ class TareaController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT COUNT(*) tareas_sin_iniciar FROM `tarea` WHERE estado = 'sin_iniciar'"
+                    query = """
+                        SELECT COUNT(*) tareas_sin_iniciar 
+                        FROM tarea
+                        WHERE
+                            estado = 'sin_iniciar'
+                            AND eliminado = false
+                    """
                     cursor.execute(query)
                     result = cursor.fetchone()
                     if result is None:
@@ -233,7 +250,13 @@ class TareaController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT COUNT(*) tareas_en_proceso FROM `tarea` WHERE estado = 'en_proceso'"
+                    query = """
+                        SELECT COUNT(*) tareas_en_proceso
+                        FROM tarea
+                        WHERE
+                            estado = 'en_proceso'
+                            AND eliminado = false
+                    """
                     cursor.execute(query)
                     result = cursor.fetchone()
                     if result is None:
@@ -248,7 +271,13 @@ class TareaController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT COUNT(*) tareas_ejecutadas FROM `tarea` WHERE estado = 'ejecutada'"
+                    query = """
+                        SELECT COUNT(*) tareas_ejecutadas 
+                        FROM tarea
+                        WHERE
+                            estado = 'ejecutada'
+                            AND eliminado = false
+                    """
                     cursor.execute(query)
                     result = cursor.fetchone()
                     if result is None:
@@ -264,7 +293,7 @@ class TareaController:
             with connection:
                 with connection.cursor() as cursor:
                     query = """
-                        UPDATE `tarea` 
+                        UPDATE tarea
                         SET
                             titulo = %s,
                             prioridad = %s,
@@ -273,7 +302,7 @@ class TareaController:
                             fecha_limite = %s,
                             evidencia = %s,
                             estado = %s
-                        WHERE `id` = %s
+                        WHERE id = %s
                     """
                     cursor.execute(
                         query,
@@ -298,7 +327,11 @@ class TareaController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "DELETE FROM `tarea` WHERE `id` = %s"
+                    query = """
+                        UPDATE tarea
+                        SET eliminado = true
+                        WHERE id = %s
+                    """
                     cursor.execute(query, (id,))
                 connection.commit()
         except Exception as e:

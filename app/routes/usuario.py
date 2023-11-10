@@ -8,6 +8,7 @@ from phonenumbers import (
     is_valid_number,
     parse as parse_phone_number,
 )
+import pymysql
 from pymysql.err import IntegrityError
 
 from app.config.jwt import (
@@ -109,7 +110,17 @@ def create_usuario(
     payload.contrasena = hash_password(str(payload.contrasena))
     payload.email = payload.email.lower()
 
-    usuario_controller.create(payload)
+    try:
+        usuario_controller.create(payload)
+    except pymysql.err.IntegrityError as err:
+        print(err)
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "msg": "El email, numero de documento o numero de telefono ya estan siendo usados"
+            },
+        )
+
     user_created = usuario_controller.get_by_email(payload.email)
     if user_created is None:
         raise HTTPException(
@@ -415,6 +426,44 @@ def get_top_tareas_sin_iniciar(
     users = usuario_controller.get_top_mas_tareas_sin_iniciar()
 
     return {"msg": "Top usuarios con más tareas sin iniciar", "data": {"users": users}}
+
+
+@router.delete("/{usuario_id}", status_code=status.HTTP_200_OK)
+def delete_usuario(
+    usuario_id: int,
+    current_user: Annotated[dict[str, Any], Depends(get_current_user)],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    if usuario_id == current_user["id"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No puedes eliminarte a ti mismo",
+        )
+
+    user = usuario_controller.get_by_id(usuario_id)
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado",
+        )
+
+    usuario_controller.delete_by_id(usuario_id)
+
+    return {"msg": "Usuario eliminado"}
 
 
 @router.get("/top/tareas/asignadas")

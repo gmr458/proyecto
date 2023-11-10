@@ -8,7 +8,8 @@ CREATE TABLE `usuario` (
   `code_country` varchar(255) NOT NULL,
   `phone_number` varchar(255) UNIQUE NOT NULL,
   `fecha_creacion` timestamp NOT NULL DEFAULT (now()),
-  `activado` boolean NOT NULL DEFAULT true
+  `activado` boolean NOT NULL DEFAULT true,
+  `eliminado` boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE `tarea` (
@@ -21,7 +22,8 @@ CREATE TABLE `tarea` (
   `fecha_creacion` timestamp NOT NULL DEFAULT (now()),
   `fecha_limite` timestamp NOT NULL,
   `evidencia` varchar(255),
-  `estado` ENUM ('sin_iniciar', 'en_proceso', 'ejecutada') NOT NULL DEFAULT "sin_iniciar"
+  `estado` ENUM ('sin_iniciar', 'en_proceso', 'ejecutada') NOT NULL DEFAULT "sin_iniciar",
+  `eliminado` boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE `tipo_tarea` (
@@ -42,7 +44,8 @@ CREATE TABLE `observacion` (
   `tarea_id` integer NOT NULL,
   `creador_id` integer NOT NULL,
   `contenido` varchar(255) NOT NULL,
-  `fecha_creacion` timestamp NOT NULL DEFAULT (now())
+  `fecha_creacion` timestamp NOT NULL DEFAULT (now()),
+  `eliminado` boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE `rol` (

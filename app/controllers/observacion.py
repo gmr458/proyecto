@@ -36,7 +36,13 @@ class ObservacionController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT * FROM `observacion` WHERE `id` = %s"
+                    query = """
+                        SELECT *
+                        FROM observacion
+                        WHERE
+                            eliminado = false
+                            AND id = %s
+                    """
                     cursor.execute(query, (id,))
                     tareas = cursor.fetchone()
                     return tareas
@@ -49,7 +55,13 @@ class ObservacionController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT * FROM `observacion` WHERE `tarea_id` = %s"
+                    query = """
+                        SELECT *
+                        FROM observacion
+                        WHERE
+                            eliminado = false
+                            AND tarea_id = %s
+                    """
                     cursor.execute(query, (tarea_id,))
                     tareas = cursor.fetchall()
                     return tareas
@@ -62,7 +74,13 @@ class ObservacionController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT * FROM `observacion` WHERE `creador_id` = %s"
+                    query = """
+                        SELECT *
+                        FROM observacion
+                        WHERE 
+                            eliminado = false
+                            AND creador_id = %s
+                    """
                     cursor.execute(query, (creador_id,))
                     tareas = cursor.fetchall()
                     return tareas
@@ -75,7 +93,11 @@ class ObservacionController:
         try:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "DELETE FROM `observacion` WHERE `id` = %s"
+                    query = """
+                        UPDATE observacion
+                        SET eliminado = true
+                        WHERE id = %s
+                    """
                     cursor.execute(query, (id,))
                 connection.commit()
         except Exception as e:

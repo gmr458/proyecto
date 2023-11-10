@@ -71,7 +71,9 @@ class UsuarioController:
                             ON roles_usuario.usuario_id = usuario.id
                         JOIN rol
                             ON rol.id = roles_usuario.rol_id
-                        WHERE usuario.id = %s
+                        WHERE 
+                            usuario.eliminado = false
+                            AND usuario.id = %s
                         GROUP BY usuario.id
                     """
                     cursor.execute(query, (id,))
@@ -104,7 +106,9 @@ class UsuarioController:
                             ON roles_usuario.usuario_id = usuario.id
                         JOIN rol
                             ON rol.id = roles_usuario.rol_id
-                        WHERE usuario.email = %s
+                        WHERE 
+                            usuario.eliminado = false
+                            AND usuario.email = %s
                         GROUP BY usuario.id
                     """
                     cursor.execute(query, (email,))
@@ -137,7 +141,9 @@ class UsuarioController:
                             ON roles_usuario.usuario_id = usuario.id
                         JOIN rol
                             ON rol.id = roles_usuario.rol_id
-                        WHERE usuario.numero_documento = %s
+                        WHERE 
+                            usuario.eliminado = false
+                            AND usuario.numero_documento = %s
                         GROUP BY usuario.id
                     """
                     cursor.execute(query, (numero_documento,))
@@ -170,7 +176,9 @@ class UsuarioController:
                             ON roles_usuario.usuario_id = usuario.id
                         JOIN rol
                             ON rol.id = roles_usuario.rol_id
-                        WHERE usuario.phone_number = %s
+                        WHERE 
+                            usuario.eliminado = false
+                            AND usuario.phone_number = %s
                         GROUP BY usuario.id
                     """
                     cursor.execute(query, (phone_number,))
@@ -202,6 +210,7 @@ class UsuarioController:
                             ON roles_usuario.usuario_id = usuario.id
                         JOIN rol
                             ON rol.id = roles_usuario.rol_id
+                        WHERE usuario.eliminado = false
                         GROUP BY usuario.email
                     """
                     cursor.execute(query)
@@ -231,7 +240,9 @@ class UsuarioController:
                         FROM usuario
                         LEFT JOIN tarea
                             ON usuario.id = tarea.empleado_id
-                        WHERE tarea.estado = 'ejecutada'
+                        WHERE 
+                            usuario.eliminado = false
+                            AND tarea.estado = 'ejecutada'
                         GROUP BY usuario.id
                         ORDER BY tareas_ejecutadas DESC
                     """
@@ -262,7 +273,9 @@ class UsuarioController:
                         FROM usuario
                         LEFT JOIN tarea
                             ON usuario.id = tarea.empleado_id
-                        WHERE tarea.estado = 'en_proceso'
+                        WHERE
+                            usuario.eliminado = false
+                            AND tarea.estado = 'en_proceso'
                         GROUP BY usuario.id
                         ORDER BY tareas_en_proceso DESC
                     """
@@ -293,7 +306,9 @@ class UsuarioController:
                         FROM usuario
                         LEFT JOIN tarea
                             ON usuario.id = tarea.empleado_id
-                        WHERE tarea.estado = 'sin_iniciar'
+                        WHERE 
+                            usuario.eliminado = false
+                            AND tarea.estado = 'sin_iniciar'
                         GROUP BY usuario.id
                         ORDER BY tareas_sin_iniciar DESC
                     """
@@ -324,12 +339,112 @@ class UsuarioController:
                         FROM usuario
                         LEFT JOIN tarea
                             ON usuario.id = tarea.empleado_id
-                        WHERE usuario.id = tarea.empleado_id
+                        WHERE 
+                            usuario.eliminado = false
+                            AND usuario.id = tarea.empleado_id
                         GROUP BY usuario.id
                         ORDER BY tareas_asignadas DESC
                     """
                     cursor.execute(query)
                     usuarios = cursor.fetchall()
                     return usuarios
+        except Exception as e:
+            raise e
+
+    def get_count_admins(self) -> int:
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        SELECT COUNT(*) count_administradores
+                        FROM (
+                            SELECT usuario.id
+                            FROM usuario
+                            JOIN roles_usuario
+                                ON roles_usuario.usuario_id = usuario.id
+                            JOIN rol
+                                ON rol.id = roles_usuario.rol_id
+                            WHERE
+                                usuario.eliminado = false
+                                AND rol.nombre = 'administrador'
+                            GROUP BY usuario.id
+                        ) AS data;
+                    """
+                    cursor.execute(query)
+                    result = cursor.fetchone()
+                    if result is None:
+                        return 0
+                    return result["count_administradores"]
+        except Exception as e:
+            raise e
+
+    def is_admin_by_id(self, usuario_id: int) -> bool:
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        SELECT usuario.id
+                        FROM usuario
+                        JOIN roles_usuario
+                            ON roles_usuario.usuario_id = usuario.id
+                        JOIN rol
+                            ON rol.id = roles_usuario.rol_id
+                        WHERE
+                            usuario.eliminado = false
+                            AND rol.nombre = 'administrador'
+                            AND usuario.id = %s
+                        GROUP BY usuario.id
+                    """
+                    cursor.execute(query, (id,))
+                    user = cursor.fetchone()
+                    if user is None:
+                        return False
+                    return True
+        except Exception as e:
+            raise e
+
+    def get_count_empleados(self):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        SELECT COUNT(*) count_empleados
+                        FROM (
+                            SELECT usuario.id
+                            FROM usuario
+                            JOIN roles_usuario
+                                ON roles_usuario.usuario_id = usuario.id
+                            JOIN rol
+                                ON rol.id = roles_usuario.rol_id
+                            WHERE
+                                usuario.eliminado = false
+                                AND rol.nombre = 'empleado'
+                            GROUP BY usuario.id
+                        ) AS data;
+                    """
+                    cursor.execute(query)
+                connection.commit()
+        except Exception as e:
+            raise e
+
+    def delete_by_id(self, id: int):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        UPDATE usuario
+                        SET eliminado = true
+                        WHERE id = %s
+                    """
+                    cursor.execute(query, (id,))
+                connection.commit()
         except Exception as e:
             raise e
