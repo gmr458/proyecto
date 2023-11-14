@@ -18,7 +18,7 @@ mimesis_datetime = Datetime()
 class Task:
     titulo: str
     prioridad: str
-    tipo: str
+    tipo_id: int
     empleado_id: int
     creador_id: int
     fecha_limite: datetime
@@ -30,11 +30,11 @@ class User:
     id: int
     nombre: str
     apellido: str
-    code_country: str
-    phone_number: str
     email: str
     contrasena: str
     numero_documento: str
+    code_country: str
+    phone_number: str
     rol_id: int
     activado: bool
 
@@ -87,7 +87,7 @@ for i in range(348):
     task = Task(
         titulo=text.sentence(),
         prioridad=generic.random.choice(["baja", "media", "alta"]),
-        tipo=generic.random.choice(["quimico", "agua", "aire", "reciclaje"]),
+        tipo_id=generic.random.choice([1, 2, 3, 4]),
         empleado_id=numeric.integer_number(start=6, end=30),
         creador_id=numeric.integer_number(start=1, end=5),
         fecha_limite=mimesis_datetime.datetime(start=2023, end=2024),
@@ -105,17 +105,20 @@ def create_users(users: list[User]):
         with connection:
             with connection.cursor() as cursor:
                 for user in users:
-                    query = """INSERT INTO `usuario` (
-                        `id`,
-                        `nombre`,
-                        `apellido`,
-                        `email`,
-                        `contrasena`,
-                        `numero_documento`,
-                        `activado`
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
                     cursor.execute(
-                        query,
+                        """
+                        INSERT INTO usuario (
+                            id,
+                            nombre,
+                            apellido,
+                            email,
+                            contrasena,
+                            numero_documento,
+                            code_country,
+                            phone_number,
+                            activado
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        """,
                         (
                             user.id,
                             user.nombre,
@@ -123,24 +126,14 @@ def create_users(users: list[User]):
                             user.email,
                             user.contrasena,
                             user.numero_documento,
+                            user.code_country,
+                            user.phone_number,
                             True,
                         ),
                     )
 
                     user_id = cursor.lastrowid
 
-                    cursor.execute(
-                        """INSERT INTO `telefono` (
-                            `usuario_id`,
-                            `code_country`,
-                            `number`
-                        ) VALUES (%s, %s, %s)""",
-                        (
-                            user_id,
-                            user.code_country,
-                            user.phone_number,
-                        ),
-                    )
                     cursor.execute(
                         """INSERT INTO `roles_usuario` (
                             `usuario_id`,
@@ -173,7 +166,7 @@ def create_tasks(tasks: list[Task]):
                     query = """INSERT INTO `tarea` (
                         `titulo`,
                         `prioridad`,
-                        `tipo`,
+                        `tipo_id`,
                         `empleado_id`,
                         `creador_id`,
                         `fecha_limite`,
@@ -185,7 +178,7 @@ def create_tasks(tasks: list[Task]):
                         (
                             task.titulo,
                             task.prioridad,
-                            task.tipo,
+                            task.tipo_id,
                             task.empleado_id,
                             task.creador_id,
                             task.fecha_limite,
