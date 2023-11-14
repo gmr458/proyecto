@@ -1,14 +1,14 @@
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status
 
 from app.config.jwt import get_current_user
 from app.controllers.rol import RolController
 from app.controllers.tarea import TareaController
 from app.controllers.usuario import UsuarioController
+from app.util.api_router import APIRouter
 from app.models.rol import NombreRol
 from app.models.tarea_base_schema import TareaBaseSchema
-
 
 router = APIRouter()
 
@@ -22,6 +22,9 @@ def create_tarea(
     payload: TareaBaseSchema,
     current_user: Annotated[dict[str, Any], Depends(get_current_user)],
 ):
+    print(f"current user {current_user}")
+    print(f"payload {payload}")
+
     roles = rol_controller.get_by_user_id(current_user["id"])
 
     es_admin = False
@@ -34,21 +37,30 @@ def create_tarea(
     if es_admin is False:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No tiene permisos para hacer esta operación",
+            detail={
+                "msg": "No tiene permisos para hacer esta operación",
+                "cause": "bad_auth",
+            },
         )
 
     tareas_found = tarea_controller.get_by_titulo(payload.titulo)
     if tareas_found is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Ya existe una tarea con ese titulo",
+            detail={
+                "msg": "Ya existe una tarea con ese titulo",
+                "cause": "titulo",
+            },
         )
 
     usuario_found = usuario_controller.get_by_id(payload.empleado_id)
     if usuario_found is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="El usuario al que desea asignar la tarea no existe",
+            detail={
+                "msg": "El usuario al que desea asignar la tarea no existe",
+                "cause": "empleado_id",
+            },
         )
 
     roles_usuario = rol_controller.get_by_user_id(usuario_found["id"])
@@ -63,7 +75,10 @@ def create_tarea(
     if usuario_es_admin:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No puede asignar una tarea a un administrador",
+            detail={
+                "msg": "No puede asignar una tarea a un administrador",
+                "cause": "empleado_id",
+            },
         )
 
     payload.creador_id = current_user["id"]
@@ -75,7 +90,7 @@ def create_tarea(
             detail="Error obteniendo tarea creada",
         )
 
-    return {"mensaje": "Tarea creada", "tarea": tarea_created}
+    return {"msg": "Tarea creada", "tarea": tarea_created}
 
 
 @router.get("/", status_code=status.HTTP_200_OK)
@@ -409,7 +424,10 @@ def delete_tarea(
     if es_admin is False:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No tiene permisos para hacer esta operación",
+            detail={
+                "msg": "No tiene permisos para hacer esta operación",
+                "cause": "bad_auth",
+            },
         )
 
     tarea = tarea_controller.get_by_id(tarea_id)
@@ -417,9 +435,12 @@ def delete_tarea(
     if tarea is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Tarea no encontrada",
+            detail={
+                "msg": "Tarea no encontrada",
+                "cause": "id",
+            },
         )
 
     tarea_controller.delete_by_id(tarea_id)
 
-    return {"mensaje": "Tarea eliminada"}
+    return {"msg": "Tarea eliminada"}

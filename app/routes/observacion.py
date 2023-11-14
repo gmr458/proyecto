@@ -1,12 +1,13 @@
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status
 
 from app.config.jwt import get_current_user
 from app.controllers.observacion import ObservacionController
 from app.controllers.rol import RolController
 from app.controllers.tarea import TareaController
 from app.controllers.usuario import UsuarioController
+from app.util.api_router import APIRouter
 from app.models.observacion_base_schema import ObservacionBaseSchema
 from app.models.rol import NombreRol
 

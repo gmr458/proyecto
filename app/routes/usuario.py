@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, status
+from fastapi import Depends, HTTPException, UploadFile, status
 import pandas as pd
 from phonenumbers import (
     NumberParseException,
@@ -20,9 +20,10 @@ from app.config.jwt import (
 )
 from app.controllers.rol import RolController
 from app.controllers.usuario import UsuarioController
-from app.models.rol import NombreRol
 from app.models.create_usuario_schema import CreateUsuarioSchema
 from app.models.login_usuario_schema import LoginUsuarioSchema
+from app.models.rol import NombreRol
+from app.util.api_router import APIRouter
 
 router = APIRouter()
 
@@ -317,7 +318,7 @@ def mi_perfil(
         Depends(get_current_user),
     ],
 ):
-    return current_user
+    return {"msg": "Perfil de usuario", "data": {"user": current_user}}
 
 
 @router.get("/all")
@@ -345,6 +346,60 @@ def get_all(
     users = usuario_controller.get_all()
 
     return {"msg": "Todos los usuarios", "data": {"users": users}}
+
+
+@router.get("/all/empleados")
+def get_all_empleados(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    users = usuario_controller.get_all_empleados()
+
+    return {"msg": "Todos los usuarios con rol empleado", "data": {"users": users}}
+
+
+@router.get("/all/admins")
+def get_all_admins(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    users = usuario_controller.get_all_admins()
+
+    return {"msg": "Todos los usuarios con rol administrador", "data": {"users": users}}
 
 
 @router.get("/top/tareas/ejecutadas")
@@ -445,20 +500,23 @@ def delete_usuario(
     if es_admin is False:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No tiene permisos para hacer esta operación",
+            detail={
+                "msg": "No tiene permisos para hacer esta operación",
+                "cause": "bad_auth",
+            },
         )
 
     if usuario_id == current_user["id"]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No puedes eliminarte a ti mismo",
+            detail={"msg": "No puedes eliminarte a ti mismo"},
         )
 
     user = usuario_controller.get_by_id(usuario_id)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Usuario no encontrado",
+            detail={"msg": "Usuario no encontrado"},
         )
 
     usuario_controller.delete_by_id(usuario_id)
