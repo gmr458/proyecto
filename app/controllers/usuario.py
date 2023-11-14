@@ -219,6 +219,74 @@ class UsuarioController:
         except Exception as e:
             raise e
 
+    def get_all_empleados(self):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        SELECT
+                            usuario.id,
+                            usuario.nombre,
+                            usuario.apellido,
+                            usuario.email,
+                            usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
+                            usuario.fecha_creacion,
+                            usuario.activado,
+                            GROUP_CONCAT(rol.nombre) AS roles
+                        FROM usuario
+                        JOIN roles_usuario
+                            ON roles_usuario.usuario_id = usuario.id
+                        JOIN rol
+                            ON rol.id = roles_usuario.rol_id
+                        WHERE
+                            usuario.eliminado = false
+                            AND rol.nombre = 'empleado'
+                        GROUP BY usuario.id
+                    """
+                    cursor.execute(query)
+                    usuarios = cursor.fetchall()
+                    return usuarios
+        except Exception as e:
+            raise e
+
+    def get_all_admins(self):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        SELECT
+                            usuario.id,
+                            usuario.nombre,
+                            usuario.apellido,
+                            usuario.email,
+                            usuario.numero_documento,
+                            usuario.code_country,
+                            usuario.phone_number,
+                            usuario.fecha_creacion,
+                            usuario.activado,
+                            GROUP_CONCAT(rol.nombre) AS roles
+                        FROM usuario
+                        JOIN roles_usuario
+                            ON roles_usuario.usuario_id = usuario.id
+                        JOIN rol
+                            ON rol.id = roles_usuario.rol_id
+                        WHERE
+                            usuario.eliminado = false
+                            AND rol.nombre = 'administrador'
+                        GROUP BY usuario.id
+                    """
+                    cursor.execute(query)
+                    usuarios = cursor.fetchall()
+                    return usuarios
+        except Exception as e:
+            raise e
+
     def get_top_mas_tareas_ejecutadas(self):
         connection = get_mysql_connection()
 
