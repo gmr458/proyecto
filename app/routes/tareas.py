@@ -257,7 +257,7 @@ def get_count_all(current_user: Annotated[dict[str, Any], Depends(get_current_us
     return {"msg": "Total tareas", "data": {"total_tasks": total_tasks}}
 
 
-@router.get("/count/sin_iniciar")
+@router.get("/count/estado/sin_iniciar")
 def get_count_sin_iniciar(
     current_user: Annotated[
         dict[str, Any],
@@ -279,7 +279,7 @@ def get_count_sin_iniciar(
             detail="No tiene permisos para hacer esta operación",
         )
 
-    tareas_sin_iniciar = tarea_controller.get_count_sin_iniciar()
+    tareas_sin_iniciar = tarea_controller.get_count_estado_sin_iniciar()
 
     return {
         "msg": "Total tareas sin iniciar",
@@ -287,7 +287,7 @@ def get_count_sin_iniciar(
     }
 
 
-@router.get("/count/en_proceso")
+@router.get("/count/estado/en_proceso")
 def get_count_en_proceso(
     current_user: Annotated[
         dict[str, Any],
@@ -309,7 +309,7 @@ def get_count_en_proceso(
             detail="No tiene permisos para hacer esta operación",
         )
 
-    tareas_en_proceso = tarea_controller.get_count_en_proceso()
+    tareas_en_proceso = tarea_controller.get_count_estado_en_proceso()
 
     return {
         "msg": "Total tareas en proceso",
@@ -317,7 +317,7 @@ def get_count_en_proceso(
     }
 
 
-@router.get("/count/ejecutadas")
+@router.get("/count/estado/ejecutadas")
 def get_count_ejecutadas(
     current_user: Annotated[
         dict[str, Any],
@@ -339,11 +339,276 @@ def get_count_ejecutadas(
             detail="No tiene permisos para hacer esta operación",
         )
 
-    tareas_ejecutadas = tarea_controller.get_count_ejecutadas()
+    tareas_ejecutadas = tarea_controller.get_count_estado_ejecutadas()
 
     return {
         "msg": "Total tareas ejecutadas",
         "data": {"tareas_ejecutadas": tareas_ejecutadas},
+    }
+
+
+@router.get("/count/prioridad/baja")
+def get_count_prioridad_baja(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    tareas_prioridad_baja = tarea_controller.get_count_prioridad_baja()
+
+    return {
+        "msg": "Total tareas con prioridad baja",
+        "data": {"tareas_prioridad_baja": tareas_prioridad_baja},
+    }
+
+
+@router.get("/count/prioridad/media")
+def get_count_prioridad_media(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    tareas_prioridad_media = tarea_controller.get_count_prioridad_media()
+
+    return {
+        "msg": "Total tareas con prioridad media",
+        "data": {"tareas_prioridad_media": tareas_prioridad_media},
+    }
+
+
+@router.get("/count/prioridad/alta")
+def get_count_prioridad_alta(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    tareas_prioridad_alta = tarea_controller.get_count_prioridad_alta()
+
+    return {
+        "msg": "Total tareas con prioridad alta",
+        "data": {"tareas_prioridad_alta": tareas_prioridad_alta},
+    }
+
+
+@router.get("/count/tipo/agua")
+def get_count_tipo_agua(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    tareas_tipo_agua = tarea_controller.get_count_tipo_agua()
+
+    return {
+        "msg": "Total tareas de tipo agua",
+        "data": {"tareas_tipo_agua": tareas_tipo_agua},
+    }
+
+
+@router.get("/count/tipo/aire")
+def get_count_tipo_aire(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    tareas_tipo_aire = tarea_controller.get_count_tipo_aire()
+
+    return {
+        "msg": "Total tareas de tipo aire",
+        "data": {"tareas_tipo_aire": tareas_tipo_aire},
+    }
+
+
+@router.get("/count/tipo/quimico")
+def get_count_tipo_quimico(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    tareas_tipo_quimico = tarea_controller.get_count_tipo_quimico()
+
+    return {
+        "msg": "Total tareas de tipo quimico",
+        "data": {"tareas_tipo_quimico": tareas_tipo_quimico},
+    }
+
+
+@router.get("/count/tipo/reciclaje")
+def get_count_tipo_reciclaje(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    tareas_tipo_reciclaje = tarea_controller.get_count_tipo_reciclaje()
+
+    return {
+        "msg": "Total tareas de tipo reciclaje",
+        "data": {"tareas_tipo_reciclaje": tareas_tipo_reciclaje},
+    }
+
+
+@router.get("/data/dashboard")
+def get_data_dashboard(
+    current_user: Annotated[
+        dict[str, Any],
+        Depends(get_current_user),
+    ],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+    if es_admin is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No tiene permisos para hacer esta operación",
+        )
+
+    count_tareas = tarea_controller.get_count_all()
+
+    tareas_tipo_agua = tarea_controller.get_count_tipo_agua()
+    tareas_tipo_aire = tarea_controller.get_count_tipo_aire()
+    tareas_tipo_quimico = tarea_controller.get_count_tipo_quimico()
+    tareas_tipo_reciclaje = tarea_controller.get_count_tipo_reciclaje()
+
+    tareas_prioridad_alta = tarea_controller.get_count_prioridad_alta()
+    tareas_prioridad_media = tarea_controller.get_count_prioridad_media()
+    tareas_prioridad_baja = tarea_controller.get_count_prioridad_baja()
+
+    tareas_estado_sin_iniciar = tarea_controller.get_count_estado_sin_iniciar()
+    tareas_estado_en_proceso = tarea_controller.get_count_estado_en_proceso()
+    tareas_estado_ejecutadas = tarea_controller.get_count_estado_ejecutadas()
+
+    return {
+        "msg": "Datos de tareas para la dashboard",
+        "data": {
+            "count_tareas": count_tareas,
+            "count_tareas_tipo_agua": tareas_tipo_agua,
+            "count_tareas_tipo_aire": tareas_tipo_aire,
+            "count_tareas_tipo_quimico": tareas_tipo_quimico,
+            "count_tareas_tipo_reciclaje": tareas_tipo_reciclaje,
+            "count_tareas_prioridad_alta": tareas_prioridad_alta,
+            "count_tareas_prioridad_media": tareas_prioridad_media,
+            "count_tareas_prioridad_baja": tareas_prioridad_baja,
+            "count_tareas_estado_sin_iniciar": tareas_estado_sin_iniciar,
+            "count_tareas_estado_en_proceso": tareas_estado_en_proceso,
+            "count_tareas_estado_ejecutadas": tareas_estado_ejecutadas,
+        },
     }
 
 
