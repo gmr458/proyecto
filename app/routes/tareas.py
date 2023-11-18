@@ -22,9 +22,6 @@ def create_tarea(
     payload: TareaBaseSchema,
     current_user: Annotated[dict[str, Any], Depends(get_current_user)],
 ):
-    print(f"current user {current_user}")
-    print(f"payload {payload}")
-
     roles = rol_controller.get_by_user_id(current_user["id"])
 
     es_admin = False
@@ -633,14 +630,20 @@ def update_tarea(
     if es_admin is False:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No tiene permisos para hacer esta operación",
+            detail={
+                "msg": "No tiene permisos para hacer esta operación",
+                "cause": "bad_auth",
+            },
         )
 
     tarea = tarea_controller.get_by_id(tarea_id)
     if tarea is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Tarea no encontrada",
+            detail={
+                "msg": "Tarea no encontrada",
+                "cause": "id",
+            },
         )
 
     if tarea["titulo"] != payload.titulo:
@@ -648,14 +651,38 @@ def update_tarea(
         if tarea_found is not None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="El titulo ya esta siendo usado por otra tarea",
+                detail={
+                    "msg": "El titulo ya esta siendo usado por otra tarea",
+                    "cause": "titulo",
+                },
             )
 
     usuario_found = usuario_controller.get_by_id(payload.empleado_id)
     if usuario_found is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="El usuario al que desea asignar la tarea no existe",
+            detail={
+                "msg": "El usuario al que desea asignar la tarea no existe",
+                "cause": "empleado_id",
+            },
+        )
+
+    roles_usuario = rol_controller.get_by_user_id(usuario_found["id"])
+
+    usuario_es_admin = False
+
+    for rol in roles_usuario:
+        if rol["nombre"] == NombreRol.administrador:
+            usuario_es_admin = True
+            break
+
+    if usuario_es_admin:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "msg": "No puede asignar una tarea a un administrador",
+                "cause": "empleado_id",
+            },
         )
 
     tarea_controller.update_by_id(tarea_id, payload)
@@ -663,10 +690,10 @@ def update_tarea(
     if tarea_actualizada is None:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error obteniendo tarea actualizada",
+            detail={"msg": "Error obteniendo tarea actualizada"},
         )
 
-    return {"mensaje": "Tarea actualizada", "tarea_actualizada": tarea_actualizada}
+    return {"msg": "Tarea actualizada", "tarea": tarea_actualizada}
 
 
 @router.delete(
