@@ -8,8 +8,14 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 
 from app.controllers.usuario import UsuarioController
+import os
+import sys
 
-SECRET_KEY = "my_ultra_secure_jwt_secret_key"
+SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+if SECRET_KEY is None or SECRET_KEY == "":
+    print("Environment variable JWT_SECRET_KEY does not exists")
+    sys.exit()
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 3 * 24 * 60  # 3 days
 
