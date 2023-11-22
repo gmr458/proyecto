@@ -9,6 +9,7 @@ from app.controllers.usuario import UsuarioController
 from app.util.api_router import APIRouter
 from app.models.rol import NombreRol
 from app.models.tarea_base_schema import TareaBaseSchema
+from app.util.email import send_email_async
 
 router = APIRouter()
 
@@ -18,7 +19,7 @@ rol_controller = RolController()
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def create_tarea(
+async def create_tarea(
     payload: TareaBaseSchema,
     current_user: Annotated[dict[str, Any], Depends(get_current_user)],
 ):
@@ -86,6 +87,19 @@ def create_tarea(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error obteniendo tarea creada",
         )
+
+    body_email = f"""Se le ha asignado a usted una tarea.
+Detalles:
+Titulo: {tarea_created["titulo"]}
+Prioridad: {tarea_created["prioridad"]}
+Tipo: {tarea_created["tipo_tarea"]}
+Creador: {tarea_created["creador_email"]}
+Fecha limite: {tarea_created["fecha_limite"]}
+"""
+    try:
+        await send_email_async(usuario_found["email"], "Tarea asignada", body_email)
+    except Exception as e:
+        print(e)
 
     return {"msg": "Tarea creada", "tarea": tarea_created}
 
