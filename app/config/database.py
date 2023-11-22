@@ -6,27 +6,35 @@ import pymysql.cursors
 
 load_dotenv()
 
-user = os.environ.get("MYSQL_USER") or "user"
-password = os.environ.get("MYSQL_PASSWORD") or "password"
-host = os.environ.get("MYSQL_HOST") or "127.0.0.1"
-port = int(os.environ.get("MYSQL_PORT") or "3306")
-dbname = os.environ.get("MYSQL_DBNAME") or "dbname"
+USER = os.environ.get("MYSQL_USER") or "user"
+PASSWORD = os.environ.get("MYSQL_PASSWORD") or "password"
+HOST = os.environ.get("MYSQL_HOST") or "127.0.0.1"
+PORT = int(os.environ.get("MYSQL_PORT") or "3306")
+DBNAME = os.environ.get("MYSQL_DBNAME") or "dbname"
+APP_ENV = os.environ.get("APP_ENV") or "development"
 
 
 def get_mysql_url():
-    return f"mysql+pymysql://{user}:{password}@{host}:{port}/{dbname}"
+    return f"mysql+pymysql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
 
 
 def get_mysql_connection():
+    ssl = None
+    ssl_verify_identity = None
+
+    if APP_ENV != "development":
+        ssl = {"ca": "/etc/ssl/cert.pem"}
+        ssl_verify_identity = True
+
     connection = pymysql.connect(
-        user=user,
-        password=password,
-        host=host,
-        port=port,
-        database=dbname,
+        user=USER,
+        password=PASSWORD,
+        host=HOST,
+        port=PORT,
+        database=DBNAME,
         cursorclass=pymysql.cursors.DictCursor,
-        ssl=None,
-        ssl_verify_identity=None,
+        ssl=ssl,
+        ssl_verify_identity=ssl_verify_identity,
     )
 
     return connection
