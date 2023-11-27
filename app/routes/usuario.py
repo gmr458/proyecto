@@ -19,6 +19,7 @@ from app.config.jwt import (
     verify_password,
 )
 from app.controllers.rol import RolController
+from app.controllers.tarea import TareaController
 from app.controllers.usuario import UsuarioController
 from app.models.create_usuario_schema import CreateUsuarioSchema
 from app.models.login_usuario_schema import LoginUsuarioSchema
@@ -28,6 +29,7 @@ from app.util.api_router import APIRouter
 router = APIRouter()
 
 usuario_controller = UsuarioController()
+tarea_controller = TareaController()
 rol_controller = RolController()
 
 
@@ -517,6 +519,14 @@ def delete_usuario(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"msg": "Usuario no encontrado"},
+        )
+
+    tareas_usuario = tarea_controller.get_by_usuario_id(user["id"])
+
+    if len(tareas_usuario) > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"msg": "No puede eliminar un usuario con tareas asignadas"},
         )
 
     usuario_controller.delete_by_id(usuario_id)
