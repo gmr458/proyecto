@@ -462,6 +462,28 @@ class TareaController:
         except Exception as e:
             raise e
 
+    def update_estado_by_id(self, id: int, estado: str):
+        connection = get_mysql_connection()
+
+        try:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        UPDATE tarea
+                        SET estado = %s
+                        WHERE id = %s
+                    """
+                    cursor.execute(
+                        query,
+                        (
+                            estado,
+                            id,
+                        ),
+                    )
+                connection.commit()
+        except Exception as e:
+            raise e
+
     def delete_by_id(self, id: int):
         connection = get_mysql_connection()
 

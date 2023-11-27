@@ -750,3 +750,67 @@ def delete_tarea(
     tarea_controller.delete_by_id(tarea_id)
 
     return {"msg": "Tarea eliminada"}
+
+
+@router.patch(
+    "/{tarea_id}/estado/{estado}",
+    status_code=status.HTTP_200_OK,
+)
+def update_estado_tarea(
+    tarea_id: int,
+    estado: str,
+    current_user: Annotated[dict[str, Any], Depends(get_current_user)],
+):
+    roles = rol_controller.get_by_user_id(current_user["id"])
+
+    es_admin = False
+    es_empleado = False
+
+    for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
+        if rol["nombre"] == NombreRol.empleado:
+            es_empleado = True
+            break
+
+    if es_admin is False and es_empleado is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "msg": "No tiene permisos para hacer esta operación",
+                "cause": "bad_auth",
+            },
+        )
+
+    tarea = tarea_controller.get_by_id(tarea_id)
+
+    if tarea is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "msg": "Tarea no encontrada",
+                "cause": "id",
+            },
+        )
+
+    if tarea["estado"] == estado:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "msg": "La tarea ya tiene ese estado",
+                "cause": "estado",
+            },
+        )
+
+    tarea_controller.update_estado_by_id(tarea_id, estado)
+
+    tarea_actualizada = tarea_controller.get_by_id(tarea_id)
+    if tarea_actualizada is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={"msg": "Error obteniendo tarea actualizada"},
+        )
+
+    return {"msg": "Estado de la tarea cambiado", "tarea": tarea_actualizada}
