@@ -2,68 +2,29 @@
     "intents": [
         {
             "tag": "saludo",
-            "patterns": [
-                "Hola",
-                "Buenos dias",
-                "Como estas",
-                "Saludos",
-                "Hi",
-                "Hola que tal",
-                "Que onda",
-                "Hey",
-                "Hola amigo"
-            ],
+            "patterns": ["Hola", "¿Como estas?", "Buenos dias"],
             "responses": [
-                "Hola, ¿en que puedo ayudarte?",
-                "Buenos dias, ¿como puedo asistirte hoy?",
-                "Todo bien, ¿y tu?",
-                "Saludos, ¿en que puedo colaborar contigo?",
-                "Hola, ¿como estas? ¿En que puedo ayudarte?",
-                "¡Hola! ¿En que puedo asistirte?",
-                "¿Que tal? ¿Necesitas algo en particular?",
-                "Hey, ¿como estas? ¿En que puedo ayudarte hoy?",
-                "Hola amigo, ¿en que puedo ayudarte?"
+                "¡Hola! Soy el chatbot de administracion de tareas. ¿En que puedo ayudarte?",
+                "Hola, ¿en que puedo hacer por ti?"
             ],
             "context_set": ""
         },
         {
             "tag": "presentacion",
-            "patterns": [
-                "Quien eres",
-                "Hablame de ti",
-                "Explicate",
-                "Que eres",
-                "Cuentame sobre ti"
-            ],
+            "patterns": ["¿Quien eres?", "Explicame quien eres"],
             "responses": [
-                "Hola, soy un asistente virtual creado para ayudarte.",
-                "Soy un chatbot diseñado para brindarte información y asistencia.",
-                "Soy un chatbot amigable aqui para ayudarte en lo que necesites.",
-                "¡Saludos! Soy un asistente virtual desarrollado para facilitar tu experiencia aqui."
+                "Soy el chatbot de gestion de tareas para ingenieros ambientales."
             ],
             "context_set": ""
         },
         {
             "tag": "funcionalidad",
             "patterns": [
-                "Como funciona el sistema",
-                "Explicame el funcionamiento",
-                "Cuales son las caracteristicas",
-                "Como agregar tareas",
-                "Dime sobre la gestion de proyectos",
-                "Hay recordatorios",
-                "Puedo asignar tareas a otros",
-                "Como se filtran las tareas",
-                "Hablame sobre las notificaciones",
-                "Se integra con otras herramientas"
+                "¿Cuales son las funcionalidades del sistema?",
+                "Explicame como funciona el sistema"
             ],
             "responses": [
-                "El sistema organiza tareas por prioridades, estados y tipos.",
-                "Las caracteristicas incluyen asignacion de tareas, fechas limites y seguimiento de progreso.",
-                "Puedes agregar tareas facilmente desde la pagina para crear tareas.",
-                "El sistema tiene registros para fechas limite.",
-                "Se puedes asignar tareas a usuarios con rol empleado.",
-                "Las tareas se pueden filtrar por quien las tiene asignada, el creador, su titulo, su tipo, su prioridad y estado."
+                "El sistema de administracion de tareas esta diseñado para ingenieros ambientales. Puedes gestionar tareas, usuarios y obtener informacion a traves de una dashboard. ¿Hay algo especifico que te gustaria saber?"
             ],
             "context_set": ""
         },
@@ -71,354 +32,131 @@
             "tag": "tipos_tareas",
             "patterns": [
                 "¿Cuales son los tipos de tareas disponibles?",
-                "Dime sobre los tipos de tareas",
-                "Explicame las tareas relacionadas con el agua",
-                "Hay funciones especificas para tareas de aire",
-                "Dime sobre la gestión de tareas quimicas",
-                "Puedo asignar tareas de reciclaje a otros",
-                "Háblame sobre las notificaciones para tareas de agua",
-                "Se pueden filtrar las tareas de aire por estado",
-                "Cuáles son las caracteristicas de las tareas químicas",
-                "Cómo agregar una tarea de reciclaje",
-                "Explicame las tareas relacionadas con el agua"
+                "Dime sobre los tipos de tareas"
             ],
             "responses": [
-                "Las tareas pueden estar relacionadas con agua, reciclaje, aire y quimico.",
-                "Puedes agregar tareas de reciclaje desde la sección correspondiente en la interfaz.",
-                "Las tareas relacionadas con el agua incluyen monitoreo de calidad y gestión de recursos hidricos.",
-                "Si, hay funciones específicas para tareas relacionadas con la calidad del aire.",
-                "La gestión de tareas químicas abarca proyectos de análisis y seguimiento de sustancias químicas.",
-                "Si, puedes asignar tareas de reciclaje a otros miembros del equipo.",
-                "Recibirás notificaciones específicas para tareas relacionadas con el agua.",
-                "Si, puedes filtrar las tareas de aire por su estado de progreso.",
-                "Las tareas químicas incluyen análisis de laboratorio y evaluación de riesgos.",
-                "Para agregar una tarea de reciclaje, utiliza la opción correspondiente en el menú principal.",
-                "Las tareas relacionadas con el agua involucran monitoreo de calidad y proyectos de conservacion."
+                "Las tareas pueden ser de agua, reciclaje, aire y quimico, con prioridades (alta, media, baja) y estados (sin iniciar, en proceso, ejecutada)."
             ],
             "context_set": ""
         },
         {
             "tag": "dashboard",
             "patterns": [
-                "¿Cómo se visualiza el progreso de las tareas en la dashboard?",
-                "Explícame los gráficos circulares en la dashboard.",
-                "¿Qué muestra el gráfico de barras en la dashboard?",
-                "Háblame sobre los indicadores de estado en la dashboard.",
-                "¿Cuál es la información sobre los usuarios en la dashboard?",
-                "¿Puedo ver la cantidad total de tareas creadas?",
-                "Explícame los gráficos de porcentaje de tareas en la dashboard.",
-                "¿Qué indicadores hay sobre la prioridad de las tareas?",
-                "¿Cómo se muestra la cantidad de tareas por tipo en la dashboard?",
-                "¿Cuántos usuarios en total hay registrados?",
-                "¿Cuántos administradores hay en la plataforma?",
-                "¿Y cuántos son empleados?",
-                "¿Quiénes son los empleados con más tareas ejecutadas?",
-                "¿Y quiénes tienen más tareas en proceso?",
-                "¿Puedo saber quiénes tienen más tareas sin iniciar?",
-                "¿Cuántos empleados tienen el rol de administrador?",
-                "¿Cuántos empleados tienen el rol de empleado?",
-                "¿Cómo se representan las tareas sin terminar en la dashboard?",
-                "¿Qué información detallada puedo obtener sobre los usuarios?"
+                "Explicame la dashboard",
+                "¿Como funciona la dashboard?"
             ],
             "responses": [
-                "El progreso de las tareas se visualiza a través de gráficos circulares.",
-                "Hay un gráfico cirucular para mostrar los porcentajes de tareas ejecutadas, en proceso y sin terminar.",
-                "El gráfico de barras muestra la cantidad de tareas por tipo: agua, aire, químico o reciclaje.",
-                "Los indicadores de estado en la dashboard incluyen la cantidad de tareas según su estado y prioridad.",
-                "La dashboard muestra la cantidad total de tareas creadas y detalles sobre los usuarios registrados.",
-                "Sí, puedes ver la cantidad total de tareas creadas en la dashboard.",
-                "Los gráficos de porcentaje representan las tareas ejecutadas, en proceso y sin terminar.",
-                "Los indicadores de prioridad informan sobre la cantidad de tareas con prioridad alta, media y baja.",
-                "La dashboard muestra la cantidad de tareas por tipo a través de un gráfico de barras.",
-                "En total, hay un número específico de usuarios registrados en la plataforma.",
-                "Hay un número específico de administradores registrados en la plataforma.",
-                "Y hay un número específico de empleados registrados en la plataforma.",
-                "Los empleados con más tareas ejecutadas son: [nombres].",
-                "Los empleados con más tareas en proceso son: [nombres].",
-                "Los empleados con más tareas sin iniciar son: [nombres].",
-                "El número total de administradores en la plataforma es [cantidad].",
-                "El número total de empleados en la plataforma es [cantidad].",
-                "Las tareas sin terminar se representan en la dashboard a través de los gráficos de ciruculares.",
-                "Puedes obtener información detallada sobre los usuarios, incluyendo roles y estadísticas de tareas."
+                "Proporciona informacion sobre tareas y usuarios, como tareas totales y porcentajes segun estado, prioridad y tipo."
             ],
-
             "context_set": ""
         },
         {
             "tag": "crear_tarea",
             "patterns": [
-                "¿Cómo creo una tarea en el sistema?",
-                "Explícame el proceso para agregar una tarea.",
-                "¿Qué pasos debo seguir para crear una tarea?",
-                "¿Solo los administradores pueden crear tareas?",
-                "Háblame sobre el formulario de creación de tareas.",
-                "¿Cuáles son los campos obligatorios para crear una tarea?",
-                "¿Cómo asigno un empleado a una tarea recién creada?",
-                "¿Puedo establecer una fecha límite para la tarea?",
-                "¿Cuál es el estado predeterminado de una tarea recién creada?",
-                "¿Qué tipos de prioridad puedo seleccionar al crear una tarea?"
+                "¿Como puedo crear una nueva tarea?",
+                "Explicame el proceso para crear una tarea"
             ],
             "responses": [
-                "Para crear una tarea, inicia sesión como administrador, da click en el boton de la barra de navegacion Tareas y luego click en Crear.",
-                "El proceso para agregar una tarea implica completar un formulario específico en la plataforma.",
-                "Debes seguir los pasos indicados en el formulario de creación de tareas para agregar una nueva tarea.",
-                "Sí, solo los usuarios con el rol de administrador pueden crear tareas en el sistema.",
-                "El formulario de creación de tareas incluye campos como título, prioridad, tipo, asignación y fecha límite.",
-                "Los campos obligatorios para crear una tarea son título, prioridad, tipo, asignación y fecha límite.",
-                "Para asignar un empleado a una tarea, selecciona el empleado deseado en el formulario.",
-                "Sí, puedes establecer una fecha límite para la tarea al completar el formulario de creación.",
-                "El estado predeterminado de una tarea recién creada es 'sin iniciar'.",
-                "Al crear una tarea, puedes seleccionar prioridad alta, media o baja según la urgencia de la tarea."
+                "Solo administradores pueden crear tareas, ingresando titulo, tipo, prioridad y fecha limite."
+            ],
+            "context_set": ""
+        },
+        {
+            "tag": "asignar_tarea",
+            "patterns": [
+                "¿Como asigno una tarea a un empleado?",
+                "Explicame como asignar tareas"
+            ],
+            "responses": [
+                "Los administradores asignan tareas a empleados desde la seccion de tareas."
             ],
             "context_set": ""
         },
         {
             "tag": "editar_tarea",
             "patterns": [
-                "¿Cómo puedo editar una tarea existente?",
-                "Explícame el proceso para modificar una tarea.",
-                "¿Qué campos puedo editar en una tarea como administrador?",
-                "¿Los empleados pueden editar cualquier campo de una tarea?",
-                "Háblame sobre las restricciones de edición para empleados.",
-                "¿Puedo cambiar la asignación de una tarea existente?",
-                "¿Qué pasa si quiero cambiar la fecha límite de una tarea?",
-                "¿Cuál es el límite para editar tareas como empleado?",
-                "¿Qué sucede si intento cambiar la prioridad de una tarea?",
-                "¿Puedo modificar el estado de una tarea como administrador?"
+                "¿Puedo editar una tarea despues de crearla?",
+                "¿Como puedo modificar una tarea existente?"
             ],
             "responses": [
-                "Para editar una tarea, inicia sesión como administrador y ve a la pagina de tareas, hay una tabla con todas las tarea, cada fila al final tiene un boton con 3 puntos, ahi encontraras la opcion para editar una tarea.",
-                "El proceso para modificar una tarea implica acceder al formulario de edición y realizar los cambios necesarios.",
-                "Como administrador, puedes editar todos los campos de una tarea, incluyendo título, prioridad, tipo, asignación y fecha límite.",
-                "No, los empleados solo pueden editar el estado de una tarea y no tienen acceso a otros campos.",
-                "Los empleados solo pueden editar el estado de una tarea, manteniendo las restricciones en otros campos.",
-                "Sí, como administrador, puedes cambiar la asignación de una tarea existente a otro empleado.",
-                "Puedes cambiar la fecha límite de una tarea existente a través del formulario de edición.",
-                "Los empleados tienen restricciones en la edición de tareas y solo pueden realizar cambios en el estado de la tarea.",
-                "Si intentas cambiar la prioridad de una tarea, el sistema te mostrará un mensaje de restricción.",
-                "Sí, puedes modificar el estado de una tarea existente como administrador, según las necesidades del proyecto."
+                "Solo administradores pueden editar tareas desde la seccion de tareas."
             ],
             "context_set": ""
         },
         {
             "tag": "eliminar_tarea",
             "patterns": [
-                "¿Cómo puedo eliminar una tarea en el sistema?",
-                "Explícame el proceso para borrar una tarea.",
-                "¿Quién tiene permiso para eliminar tareas?",
-                "¿Dónde encuentro la opción para eliminar una tarea?",
-                "Háblame sobre el menú de opciones en la página de tareas.",
-                "¿Puedo recuperar una tarea eliminada por error?",
-                "¿Qué sucede si un empleado intenta eliminar una tarea?",
-                "¿Hay alguna confirmación antes de eliminar una tarea?",
-                "¿Qué información se pierde al eliminar una tarea?",
-                "¿Cómo puedo asegurarme de que la tarea se ha eliminado correctamente?"
+                "¿Como elimino una tarea?",
+                "Explicame el proceso para eliminar una tarea"
             ],
             "responses": [
-                "Solo los administradores pueden eliminar tareas en el sistema.",
-                "Para borrar una tarea, ve a la página de tareas y utiliza la opción de eliminar en el menú de opciones.",
-                "El permiso para eliminar tareas está reservado exclusivamente para los administradores.",
-                "La opción para eliminar una tarea se encuentra en el menú de opciones accesible mediante los tres puntos en cada fila de la tabla de tareas.",
-                "En la página de tareas, encontrarás un menú de opciones desplegable al hacer clic en los tres puntos de cada fila.",
-                "No, una vez eliminada una tarea, no se puede recuperar. Se recomienda revisar cuidadosamente antes de confirmar la eliminación.",
-                "Los empleados no tienen permiso para eliminar tareas; solo los administradores pueden realizar esta acción.",
-                "Sí, antes de eliminar una tarea, se muestra una confirmación para evitar eliminaciones accidentales.",
-                "Al eliminar una tarea, se pierde toda la información asociada, incluyendo título, prioridad, tipo, asignación y fecha límite.",
-                "Puedes verificar que la tarea se ha eliminado correctamente al confirmar su ausencia en la tabla de tareas después de la acción."
+                "Solo administradores pueden eliminar tareas desde la seccion de tareas."
             ],
             "context_set": ""
         },
         {
             "tag": "roles",
             "patterns": [
-                "¿Cuáles son los roles disponibles en el sistema?",
-                "Explícame las funciones del rol de administrador.",
-                "¿Qué puede hacer un administrador en el sistema?",
-                "¿Cómo se crean nuevos usuarios en el sistema?",
-                "Háblame sobre la capacidad de crear tareas como administrador.",
-                "¿Puede un administrador eliminar usuarios?",
-                "¿Cómo se editan los roles y permisos de un usuario existente?",
-                "¿Cuáles son las funciones del rol de empleado?",
-                "¿Qué puede hacer un empleado en el sistema?",
-                "¿En qué se diferencia el rol de empleado del rol de administrador?"
+                "Hablame sobre los roles en el sistema",
+                "¿Cuales son los roles disponibles?"
             ],
             "responses": [
-                "Los roles disponibles en el sistema son administrador y empleado.",
-                "El rol de administrador tiene la capacidad de gestionar usuarios, crear y editar tareas, así como realizar observaciones.",
-                "Un administrador puede crear nuevos usuarios de ambos roles y asignar tareas a usuarios con el rol de empleado.",
-                "Nuevos usuarios se crean mediante el formulario para crear usuarios, disponible para adminstradores.",
-                "Como administrador, puedes crear tareas y asignarlas a usuarios con el rol de empleado.",
-                "Sí, un administrador puede eliminar tanto usuarios como tareas en el sistema.",
-                "La edición de roles y permisos de usuarios existentes se realiza a través de la interfaz de administración.",
-                "El rol de empleado tiene la capacidad de cambiar el estado de una tarea, crear observaciones y adjuntar evidencia a la tarea.",
-                "Un empleado puede cambiar el estado de una tarea, crear observaciones y adjuntar evidencia a la tarea asignada.",
-                "La diferencia principal entre el rol de empleado y el de administrador radica en las capacidades de gestión de usuarios y tareas, que son exclusivas del administrador."
+                "Hay dos roles: administrador (gestiona todo) y empleado (ver y cambiar estado de tareas asignadas)."
             ],
             "context_set": ""
         },
         {
-            "tag": "crear_observacion",
+            "tag": "adjuntar_observacion",
             "patterns": [
-                "¿Cómo puedo añadir una observación a una tarea?",
-                "Explícame el proceso para crear comentarios en una tarea.",
-                "¿Quién puede agregar observaciones a una tarea?",
-                "¿Cuál es el propósito de las observaciones en el sistema?",
-                "¿Puedo editar una observación después de haberla creado?",
-                "¿Se pueden eliminar observaciones en el sistema?",
-                "¿Cuántas observaciones puede tener una tarea?",
-                "¿Qué información puedo incluir en una observación?",
-                "¿Es necesario ser el asignado de la tarea para añadir observaciones?"
+                "¿Como puedo adjuntar una observacion a una tarea?",
+                "Explicame como agregar comentarios a una tarea"
             ],
             "responses": [
-                "Puedes agregar observaciones a una tarea accediendo a la pagina donde estan todas las tareas, click en el menu de acciones de cada tarea y click en crear observacion.",
-                "El proceso para crear observaciones implica ir a la tarea específica y utilizar la opción de añadir observacion.",
-                "Tanto administradores como empleados pueden agregar observaciones a una tarea.",
-                "Las observaciones están sujetas a las políticas de privacidad y no deben contener información confidencial.",
-                "Sí, puedes editar una observación después de haberla creado, según las necesidades.",
-                "Sí, se pueden eliminar observaciones en el sistema, pero ten en cuenta que esta acción es irreversible.",
-                "Una tarea puede tener tantas observaciones como sea necesario para documentar su evolución.",
-                "En una observación, puedes incluir información relevante para el seguimiento y comunicación sobre la tarea.",
-                "No es necesario ser el asignado de la tarea para añadir observaciones; tanto administradores como empleados pueden contribuir con comentarios."
+                "Administradores y empleados pueden adjuntar observaciones a las tareas desde la seccion correspondiente."
             ],
             "context_set": ""
         },
         {
             "tag": "ver_usuarios",
             "patterns": [
-                "¿Cómo accedo a la página de usuarios?",
-                "Explícame el proceso para ver todos los usuarios.",
-                "¿Dónde encuentro la opción para ver la lista completa de usuarios?",
-                "Háblame sobre la interfaz de la tabla de usuarios.",
-                "¿Puedo filtrar la lista de usuarios por nombres?",
-                "¿Y por apellidos?",
-                "¿Cómo busco un usuario por su dirección de correo electrónico?",
-                "¿Es posible filtrar usuarios por números de teléfono?",
-                "¿Cuál es el propósito de ver todos los usuarios en la tabla?",
-                "¿Qué información se muestra para cada usuario en la tabla?"
+                "¿Como puedo ver la lista de usuarios?",
+                "Explicame como visualizar la lista de usuarios"
             ],
             "responses": [
-                "Para acceder a la página de usuarios, haz clic en el botón 'Usuarios' en la barra de navegación y luego selecciona 'Ver Todos'.",
-                "El proceso para ver todos los usuarios implica dos pasos: hacer clic en 'Usuarios' y luego seleccionar 'Ver Todos'.",
-                "La opción para ver la lista completa de usuarios se encuentra en la barra de navegación, bajo el botón 'Usuarios'.",
-                "La interfaz de la tabla de usuarios muestra una lista ordenada con información detallada sobre cada usuario.",
-                "Sí, puedes filtrar la lista de usuarios por nombres utilizando la opción correspondiente en la tabla.",
-                "Igualmente, puedes filtrar la lista de usuarios por apellidos mediante la opción correspondiente en la tabla.",
-                "Puedes buscar un usuario específico por su dirección de correo electrónico utilizando la función de búsqueda en la tabla.",
-                "Sí, es posible filtrar usuarios por números de teléfono utilizando la opción de filtrado en la tabla.",
-                "El propósito de ver todos los usuarios en la tabla es proporcionar una visión general de la base de usuarios y facilitar la búsqueda de información específica.",
-                "La tabla muestra información como nombres, apellidos, dirección de correo electrónico y números de teléfono para cada usuario."
+                "Administradores pueden ver usuarios desde la seccion de usuarios, con detalles sobre su rol y cantidad."
             ],
             "context_set": ""
         },
         {
             "tag": "eliminar_usuario",
             "patterns": [
-                "¿Cómo puedo eliminar un usuario en el sistema?",
-                "Explícame el proceso para borrar un usuario.",
-                "Explícame el proceso para eliminar un usuario.",
-                "¿Quién tiene permiso para eliminar usuarios?",
-                "¿Dónde encuentro la opción para eliminar un usuario?",
-                "Háblame sobre el menú de opciones en la tabla de usuarios.",
-                "¿Puedo recuperar un usuario eliminado por error?",
-                "¿Qué sucede si un empleado intenta eliminar un usuario?",
-                "¿Hay alguna confirmación antes de eliminar un usuario?",
-                "¿Qué información se pierde al eliminar un usuario?",
-                "¿Cómo puedo asegurarme de que el usuario se ha eliminado correctamente?"
+                "¿Como puedo eliminar un usuario?",
+                "Explicame el proceso para eliminar un usuario"
             ],
             "responses": [
-                "Solo los administradores pueden eliminar usuarios en el sistema.",
-                "Para borrar un usuario, ve a la página de usuarios, selecciona 'Ver Todos' y utiliza la opción de eliminar en el menú de opciones.",
-                "Para eliminar un usuario, ve a la página de usuarios, selecciona 'Ver Todos' y utiliza la opción de eliminar en el menú de opciones.",
-                "El permiso para eliminar usuarios está reservado exclusivamente para los administradores.",
-                "La opción para eliminar un usuario se encuentra en el menú de opciones accesible mediante los tres puntos en cada fila de la tabla de usuarios.",
-                "En la página de usuarios, encontrarás un menú de opciones desplegable al hacer clic en los tres puntos de cada fila.",
-                "No, una vez eliminado un usuario, no se puede recuperar. Se recomienda revisar cuidadosamente antes de confirmar la eliminación.",
-                "Los empleados no tienen permiso para eliminar usuarios; solo los administradores pueden realizar esta acción.",
-                "Sí, antes de eliminar un usuario, se muestra una confirmación para evitar eliminaciones accidentales.",
-                "Al eliminar un usuario, se pierde toda la información asociada, incluyendo nombre, apellidos, correo electrónico y número de teléfono.",
-                "Puedes verificar que el usuario se ha eliminado correctamente al confirmar su ausencia en la tabla de usuarios después de la acción."
+                "Solo administradores pueden eliminar usuarios desde la seccion de usuarios."
             ],
             "context_set": ""
         },
         {
             "tag": "crear_usuario",
             "patterns": [
-                "¿Cómo puedo crear un nuevo usuario en el sistema?",
-                "Explícame el proceso para agregar usuarios.",
-                "¿Quién tiene permiso para crear usuarios?",
-                "¿Dónde encuentro la opción para agregar un nuevo usuario?",
-                "Háblame sobre el formulario de creación de usuarios.",
-                "¿Puedo crear varios usuarios a la vez?",
-                "¿Cuáles son los datos requeridos para crear un usuario?",
-                "¿Puedo crear un usuario sin asignarle un rol?",
-                "¿Cuál es el propósito de crear usuarios en lotes desde un archivo Excel?",
-                "¿Hay alguna confirmación después de crear un usuario?"
+                "¿Como creo un nuevo usuario?",
+                "Explicame el proceso para crear un usuario"
             ],
             "responses": [
-                "Solo los administradores pueden crear usuarios en el sistema.",
-                "Para agregar un nuevo usuario, haz clic en el botón 'Usuarios' en la barra de navegación, y luego selecciona 'Crear'.",
-                "El permiso para crear usuarios está reservado exclusivamente para los administradores.",
-                "La opción para agregar un nuevo usuario se encuentra en la barra de navegación, bajo el botón 'Usuarios', y luego selecciona 'Crear'.",
-                "El formulario de creación de usuarios requiere información como nombre, apellido, número de documento de identidad, teléfono móvil, correo electrónico, contraseña y rol.",
-                "Sí, puedes crear varios usuarios a la vez subiendo un archivo Excel con los datos de los usuarios que deseas crear.",
-                "Los datos requeridos para crear un usuario son nombre, apellido, número de documento de identidad, teléfono móvil, correo electrónico, contraseña y su rol.",
-                "No, es obligatorio asignar un rol al crear un usuario. Este campo no puede quedar en blanco.",
-                "El propósito de crear usuarios en lotes desde un archivo Excel es agilizar el proceso cuando se necesitan agregar múltiples usuarios al sistema.",
-                "Sí, después de crear un usuario, se muestra una confirmación para informarte que el usuario ha sido creado correctamente."
+                "Solo administradores pueden crear usuarios mediante el formulario o subiendo un archivo Excel con informacion de usuarios."
             ],
             "context_set": ""
         },
         {
-            "tag": "prioridad",
+            "tag": "prioridades",
             "patterns": [
-                "Explícame las prioridades de las tareas en el sistema.",
-                "¿Cuántos niveles de prioridad hay para las tareas?",
-                "¿Cómo asigno prioridad a una tarea?",
-                "¿Puedo cambiar la prioridad de una tarea después de crearla?",
-                "Háblame sobre la importancia de la prioridad en las tareas.",
-                "¿Las tareas con prioridad baja se tratan de la misma manera que las de prioridad alta?",
-                "¿Hay algún criterio específico para asignar prioridad a una tarea?",
-                "¿Las tareas con prioridad media son consideradas urgentes?",
-                "¿Puedo filtrar tareas por su nivel de prioridad?",
-                "¿La prioridad de una tarea afecta su fecha límite?"
+                "Hablame sobre las prioridades de las tareas",
+                "¿Cuales son las prioridades disponibles?"
             ],
             "responses": [
-                "Las prioridades de las tareas en el sistema se dividen en baja, media y alta.",
-                "Hay tres niveles de prioridad para las tareas: baja, media y alta.",
-                "Puedes asignar prioridad a una tarea seleccionando el nivel deseado durante el proceso de creación.",
-                "Sí, puedes cambiar la prioridad de una tarea después de haberla creado, según sea necesario.",
-                "La prioridad de las tareas ayuda a destacar la importancia y urgencia de su realización.",
-                "No, las tareas con prioridad baja no se tratan de la misma manera que las de prioridad alta; la prioridad influye en la atención y tiempo dedicado a cada tarea.",
-                "El criterio para asignar prioridad a una tarea puede variar según la urgencia y relevancia del trabajo.",
-                "Las tareas con prioridad media no son necesariamente consideradas urgentes, pero indican una importancia intermedia.",
-                "Sí, puedes filtrar tareas por su nivel de prioridad para enfocarte en un grupo específico de tareas.",
-                "La prioridad de una tarea puede afectar su fecha límite, ya que las tareas con prioridad alta a menudo se consideran más urgentes y pueden requerir una atención más inmediata."
-            ],
-            "context_set": ""
-        },
-        {
-            "tag": "estado",
-            "patterns": [
-                "Explícame los estados de las tareas en el sistema.",
-                "¿Cuáles son los posibles estados de una tarea?",
-                "¿Puedo cambiar el estado de una tarea después de crearla?",
-                "Háblame sobre la importancia de los estados en las tareas.",
-                "¿Las tareas en estado 'en proceso' tienen una fecha límite más estricta?",
-                "¿Hay algún criterio específico para cambiar el estado de una tarea?",
-                "¿Puedo filtrar tareas por su estado?",
-                "¿Las tareas en estado 'ejecutada' pueden ser modificadas?",
-                "¿El estado de una tarea afecta su prioridad?"
-            ],
-            "responses": [
-                "Los estados de las tareas en el sistema son 'sin iniciar' (por defecto), 'en proceso' y 'ejecutada'.",
-                "Los posibles estados de una tarea son 'sin iniciar', 'en proceso' y 'ejecutada'.",
-                "Sí, puedes cambiar el estado de una tarea después de haberla creado, según sea necesario.",
-                "Los estados de las tareas ayudan a indicar en qué fase del proceso se encuentra cada tarea, facilitando su gestión y seguimiento.",
-                "No necesariamente, el estado 'en proceso' no implica una fecha límite más estricta, pero indica que la tarea está actualmente en desarrollo.",
-                "El criterio para cambiar el estado de una tarea puede variar según el progreso y cumplimiento de la tarea.",
-                "Sí, puedes filtrar tareas por su estado para visualizar tareas en una fase específica del proceso.",
-                "Las tareas en estado 'ejecutada' a menudo se consideran completadas y pueden tener restricciones de modificación, dependiendo de la configuración del sistema.",
-                "El estado de una tarea y su prioridad son dos conceptos distintos, pero pueden estar relacionados dependiendo de las políticas de gestión de tareas de tu sistema."
+                "Las tareas pueden tener prioridad alta, media o baja para establecer su importancia relativa."
             ],
             "context_set": ""
         }
