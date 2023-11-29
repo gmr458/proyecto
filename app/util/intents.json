@@ -1,0 +1,172 @@
+{
+  "intents": [
+    {
+      "tag": "saludo",
+      "patterns": ["Hola", "¿Como estas?", "Buenos dias"],
+      "responses": [
+        "¡Hola! Soy el chatbot de administracion de tareas. ¿En que puedo ayudarte?",
+        "Hola, ¿en que puedo hacer por ti?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "presentacion",
+      "patterns": ["¿Quien eres?", "Explicame quién eres"],
+      "responses": [
+        "Soy el chatbot de administracion de tareas para ingenieros ambientales. Puedo ayudarte con la gestión de tareas y proporcionar información sobre el sistema."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "funcionalidad",
+      "patterns": [
+        "¿Cuales son las funcionalidades del sistema?",
+        "Explicame como funciona el sistema"
+      ],
+      "responses": [
+        "El sistema de administracion de tareas esta diseñado para ingenieros ambientales. Puedes gestionar tareas, usuarios y obtener información a traves de una dashboard. ¿Hay algo especifico que te gustaría saber?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "tipos_tareas",
+      "patterns": [
+        "¿Cuales son los tipos de tareas disponibles?",
+        "Dime sobre los tipos de tareas"
+      ],
+      "responses": [
+        "Las tareas pueden estar relacionadas con agua, reciclaje, aire y quimico. ¿Necesitas mas detalles sobre algun tipo en particular?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "dashboard",
+      "patterns": ["Explicame la dashboard", "¿Como funciona la dashboard?"],
+      "responses": [
+        "La dashboard proporciona informacion sobre tareas y usuarios. Puedes ver las tareas totales, porcentajes segun el estado, la prioridad y el tipo. Tambien se muestra información sobre usuarios, como cuantos son administradores y empleados. ¿Quieres más detalles sobre algún aspecto especifico?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "crear_tarea",
+      "patterns": [
+        "¿Como puedo crear una nueva tarea?",
+        "Explicame el proceso para crear una tarea"
+      ],
+      "responses": [
+        "Solo los administradores pueden crear tareas. Puedes hacerlo a traves de la interfaz web en la seccion de tareas. Ingresa el titulo, selecciona el tipo, la prioridad y establece la fecha límite. ¿Necesitas ayuda con algun paso en particular?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "asignar_tarea",
+      "patterns": [
+        "¿Como asigno una tarea a un empleado?",
+        "Explicame como asignar tareas"
+      ],
+      "responses": [
+        "Los administradores pueden asignar tareas a empleados desde la seccion de tareas. Selecciona el empleado al que deseas asignar. ¿Hay algo mas que quieras saber sobre la asignación de tareas?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "editar_tarea",
+      "patterns": [
+        "¿Puedo editar una tarea despues de crearla?",
+        "¿Como puedo modificar una tarea existente?"
+      ],
+      "responses": [
+        "Solo los administradores pueden editar tareas. Puedes hacerlo desde la seccion de tareas, seleccionando la tarea y realizando las modificaciones necesarias. ¿Necesitas mas detalles sobre la edición de tareas?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "eliminar_tarea",
+      "patterns": [
+        "¿Como elimino una tarea?",
+        "Explicame el proceso para eliminar una tarea"
+      ],
+      "responses": [
+        "Solo los administradores pueden eliminar tareas. Ve a la seccion de tareas, selecciona la tarea que deseas eliminar y elige la opción correspondiente. ¿Hay algo mas que quieras saber sobre la eliminación de tareas?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "roles",
+      "patterns": [
+        "Hablame sobre los roles en el sistema",
+        "¿Cuales son los roles disponibles?"
+      ],
+      "responses": [
+        "Hay dos roles en el sistema: administrador y empleado. Los administradores tienen acceso total, pueden crear y gestionar tareas y usuarios. Los empleados solo pueden ver y cambiar el estado de las tareas asignadas, hacer observacions sobre las tareas y adjuntar evidencias sobre la tarea. ¿Quieres mas detalles sobre algun rol en particular?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "crear_observacion",
+      "patterns": [
+        "¿Como puedo creat una observación a una tarea?",
+        "Explicame como agregar observaciones a una tarea"
+      ],
+      "responses": [
+        "Tanto administradores como empleados pueden crear observaciones a las tareas. Simplemente ve a la seccion de tareas, selecciona la tarea y agrega tu observación en la sección correspondiente. ¿Necesitas mas ayuda con esto?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "ver_usuarios",
+      "patterns": [
+        "¿Como puedo ver la lista de usuarios?",
+        "Explicame como visualizar la lista de usuarios"
+      ],
+      "responses": [
+        "Los administradores pueden ver la lista de usuarios desde la seccion de usuarios en la interfaz web. Alli podras ver detalles como cuántos usuarios hay, cuántos son administradores y cuántos son empleados. ¿Quieres más detalles sobre la visualización de usuarios?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "eliminar_usuario",
+      "patterns": [
+        "¿Como puedo eliminar un usuario?",
+        "Explicame el proceso para eliminar un usuario"
+      ],
+      "responses": [
+        "Solo los administradores pueden eliminar usuarios. Ve a la seccion de usuarios, selecciona al usuario que deseas eliminar y elige la opción correspondiente. ¿Necesitas mas ayuda con esto?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "crear_usuario",
+      "patterns": [
+        "¿Como creo un nuevo usuario?",
+        "Explicame el proceso para crear un usuario"
+      ],
+      "responses": [
+        "Solo los administradores pueden crear usuarios. Puedes hacerlo a traves del formulario de creacion de usuarios o subiendo un archivo Excel con información de usuarios. ¿Necesitas mas detalles sobre la creación de usuarios?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "prioridades",
+      "patterns": [
+        "Hablame sobre las prioridades de las tareas",
+        "¿Cuales son las prioridades disponibles?"
+      ],
+      "responses": [
+        "Las tareas pueden tener prioridad alta, media o baja. Esta prioridad ayuda a establecer la importancia relativa de cada tarea. ¿Necesitas mas detalles sobre alguna prioridad?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "estado",
+      "patterns": [
+        "Hablame sobre los estados de las tareas",
+        "¿Cuales son los estados de tarea disponibles?"
+      ],
+      "responses": [
+        "Las tareas pueden tener estado sin iniciar, en proceso y ejecutada. ¿Necesitas mas detalles sobre el estado de una tarea?"
+      ],
+      "context_set": ""
+    }
+  ]
+}

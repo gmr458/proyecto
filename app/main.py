@@ -4,12 +4,15 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import observacion, tareas, usuario
+from app.routes import chat, observacion, tareas, usuario
 from app.startup import crear_usuario_admin
+
+load_dotenv()
+
+crear_usuario_admin()
 
 app = FastAPI()
 
-load_dotenv()
 
 origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
@@ -42,4 +45,8 @@ app.include_router(
     prefix="/api/observaciones",
 )
 
-crear_usuario_admin()
+app.include_router(
+    chat.router,
+    tags=["Chatbot"],
+    prefix="/api/chat",
+)
