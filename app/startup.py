@@ -76,8 +76,22 @@ def training():
         and os.path.exists(classes_pkl)
         and os.path.exists(chatbotmodel_keras)
     ):
-        print("already trained")
-        return
+        if os.environ.get("APP_ENV") == "development":
+            print("already trained")
+            return
+
+        print("deleting old models")
+        try:
+            os.remove(words_pkl)
+            os.remove(classes_pkl)
+            os.remove(chatbotmodel_keras)
+            print("old models deleted")
+        except FileNotFoundError as e:
+            print(str(e))
+        except OSError as e:
+            print(str(e))
+        except Exception as e:
+            print(f"unexpected error: {str(e)}")
 
     nltk.download("punkt", quiet=True)
     nltk.download("wordnet", quiet=True)
@@ -145,9 +159,9 @@ def training():
     hist = model.fit(
         np.array(train_x),
         np.array(train_y),
-        epochs=500,
+        epochs=200,
         batch_size=5,
-        verbose=1,
+        verbose=2,
     )
     model.save(chatbotmodel_keras, hist)
 
