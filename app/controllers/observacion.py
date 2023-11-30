@@ -36,6 +36,7 @@ class ObservacionController:
         try:
             with connection:
                 with connection.cursor() as cursor:
+
                     query = """
                         SELECT
                             observacion.id,
@@ -45,7 +46,11 @@ class ObservacionController:
                             usuario.apellido AS creador_apellido,
                             usuario.email AS creador_email,
                             observacion.contenido,
-                            observacion.fecha_creacion
+                            CASE
+                                WHEN timediff(now(),convert_tz(now(),@@session.time_zone,'+00:00')) = '00:00:00'
+                                    THEN CONVERT_TZ(observacion.fecha_creacion, 'UTC', 'America/Bogota')
+                                ELSE CONVERT_TZ(observacion.fecha_creacion, 'UTC', '+00:00')
+                            END AS fecha_creacion
                         FROM observacion
                         JOIN usuario ON
                             usuario.id = observacion.creador_id
@@ -73,7 +78,11 @@ class ObservacionController:
                             usuario.apellido AS creador_apellido,
                             usuario.email AS creador_email,
                             observacion.contenido,
-                            observacion.fecha_creacion
+                            CASE
+                                WHEN timediff(now(),convert_tz(now(),@@session.time_zone,'+00:00')) = '00:00:00'
+                                    THEN CONVERT_TZ(observacion.fecha_creacion, 'UTC', 'America/Bogota')
+                                ELSE CONVERT_TZ(observacion.fecha_creacion, 'UTC', '+00:00')
+                            END AS fecha_creacion
                         FROM observacion
                         JOIN usuario ON
                             usuario.id = observacion.creador_id
@@ -101,7 +110,11 @@ class ObservacionController:
                             usuario.apellido AS creador_apellido,
                             usuario.email AS creador_email,
                             observacion.contenido,
-                            observacion.fecha_creacion
+                            CASE
+                                WHEN timediff(now(),convert_tz(now(),@@session.time_zone,'+00:00')) = '00:00:00'
+                                    THEN CONVERT_TZ(observacion.fecha_creacion, 'UTC', 'America/Bogota')
+                                ELSE CONVERT_TZ(observacion.fecha_creacion, 'UTC', '+00:00')
+                            END AS fecha_creacion
                         FROM observacion
                         JOIN usuario ON
                             usuario.id = observacion.creador_id
