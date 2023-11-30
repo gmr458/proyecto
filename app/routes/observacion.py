@@ -27,24 +27,44 @@ def create_observacion(
 ):
     roles = rol_controller.get_by_user_id(current_user["id"])
 
+    es_admin = False
     es_empleado = False
 
     for rol in roles:
+        if rol["nombre"] == NombreRol.administrador:
+            es_admin = True
+            break
+
         if rol["nombre"] == NombreRol.empleado:
             es_empleado = True
             break
+
+    if es_admin is False and es_empleado is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "msg": "No tiene permisos para hacer esta operación",
+                "cause": "bad_auth",
+            },
+        )
 
     tarea_found = tarea_controller.get_by_id(tarea_id)
     if tarea_found is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No puede crear observaciones para una tarea que no existe",
+            detail={
+                "msg": "No puede crear observaciones para una tarea que no existe",
+                "cause": "tarea_id",
+            },
         )
 
     if es_empleado and current_user["id"] != tarea_found["empleado_id"]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No tiene permisos para hacer esta operación",
+            detail={
+                "msg": "No tiene permisos para hacer esta operación",
+                "cause": "bad_auth",
+            },
         )
 
     payload.creador_id = current_user["id"]
@@ -56,7 +76,7 @@ def create_observacion(
             detail="Error obteniendo observacion creada",
         )
 
-    return {"mensaje": "Observación creada", "observacion": observacion_creada}
+    return {"msg": "Observación creada", "observacion": observacion_creada}
 
 
 @router.get("/tarea/{tarea_id}", status_code=status.HTTP_200_OK)

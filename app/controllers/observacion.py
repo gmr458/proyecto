@@ -37,11 +37,20 @@ class ObservacionController:
             with connection:
                 with connection.cursor() as cursor:
                     query = """
-                        SELECT *
+                        SELECT
+                            observacion.id,
+                            observacion.tarea_id,
+                            observacion.creador_id,
+                            usuario.nombre AS creador_nombre,
+                            usuario.apellido AS creador_apellido,
+                            usuario.email AS creador_email,
+                            observacion.contenido,
+                            observacion.fecha_creacion
                         FROM observacion
-                        WHERE
-                            eliminado = false
-                            AND id = %s
+                        JOIN usuario ON
+                            usuario.id = observacion.creador_id
+                        WHERE observacion.eliminado = false
+                            AND observacion.id = %s
                     """
                     cursor.execute(query, (id,))
                     tareas = cursor.fetchone()
@@ -56,11 +65,20 @@ class ObservacionController:
             with connection:
                 with connection.cursor() as cursor:
                     query = """
-                        SELECT *
+                        SELECT
+                            observacion.id,
+                            observacion.tarea_id,
+                            observacion.creador_id,
+                            usuario.nombre AS creador_nombre,
+                            usuario.apellido AS creador_apellido,
+                            usuario.email AS creador_email,
+                            observacion.contenido,
+                            observacion.fecha_creacion
                         FROM observacion
-                        WHERE
-                            eliminado = false
-                            AND tarea_id = %s
+                        JOIN usuario ON
+                            usuario.id = observacion.creador_id
+                        WHERE observacion.eliminado = false
+                            AND observacion.tarea_id = %s
                     """
                     cursor.execute(query, (tarea_id,))
                     tareas = cursor.fetchall()
@@ -75,11 +93,20 @@ class ObservacionController:
             with connection:
                 with connection.cursor() as cursor:
                     query = """
-                        SELECT *
+                        SELECT
+                            observacion.id,
+                            observacion.tarea_id,
+                            observacion.creador_id,
+                            usuario.nombre AS creador_nombre,
+                            usuario.apellido AS creador_apellido,
+                            usuario.email AS creador_email,
+                            observacion.contenido,
+                            observacion.fecha_creacion
                         FROM observacion
-                        WHERE 
-                            eliminado = false
-                            AND creador_id = %s
+                        JOIN usuario ON
+                            usuario.id = observacion.creador_id
+                        WHERE observacion.eliminado = false
+                            AND observacion.creador_id = %s
                     """
                     cursor.execute(query, (creador_id,))
                     tareas = cursor.fetchall()
